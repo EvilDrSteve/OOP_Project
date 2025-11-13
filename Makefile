@@ -7,7 +7,8 @@ LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 SRC_DIR = src
 INC_DIR = include
 OBJ_DIR = obj
-BIN = game
+BUILD_DIR = build
+BIN = $(BUILD_DIR)/game
 
 # === Source and object files ===
 SRC = $(wildcard $(SRC_DIR)/*.cpp)
@@ -18,7 +19,7 @@ MAIN_OBJ = $(OBJ_DIR)/main.o
 all: $(BIN)
 
 # === Link all object files into the final executable ===
-$(BIN): $(OBJ) $(MAIN_OBJ)
+$(BIN): $(OBJ) $(MAIN_OBJ) | $(BUILD_DIR)
 	$(CXX) $(OBJ) $(MAIN_OBJ) -o $@ $(LDFLAGS)
 
 # === Compile .cpp files from src/ into obj/ ===
@@ -29,10 +30,13 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
 $(MAIN_OBJ): main.cpp | $(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -c main.cpp -o $(MAIN_OBJ)
 
-# === Ensure obj directory exists ===
+# === Ensure obj and build directories exist ===
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
+
 # === Clean build artifacts ===
 clean:
-	rm -rf $(OBJ_DIR) $(BIN)
+	rm -rf $(OBJ_DIR) $(BUILD_DIR)
