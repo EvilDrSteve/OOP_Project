@@ -1,6 +1,6 @@
 #include "GameState.hpp"
 
-GameState::GameState(sf::RenderWindow* window) : State(window){
+GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states) : State(window, states){
     std::cout << "Game State Created" << std::endl;
 }
 
@@ -10,6 +10,8 @@ GameState::~GameState(){
 
 void GameState::update(const float& dt){
     this->checkForQuit();
+
+    this->updateMousePos();
     this->updateInputs(dt);
     this->player.update(dt);
 }

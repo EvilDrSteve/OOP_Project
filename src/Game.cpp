@@ -4,12 +4,13 @@
 Game::Game() {
     this->init();
     this->initStates();
+
+
 }
 Game::~Game() {
     std::cout << "Ending Application" << std::endl;
 
     delete this->window;
-
     while(!this->states.empty()){
         delete this->states.top();
         this->states.pop();
@@ -19,11 +20,14 @@ Game::~Game() {
 
 void Game::init() {
     this->isRunning = true;
-
+    
     this->window = new sf::RenderWindow(sf::VideoMode(800, 600, 32), "Diner Dash", sf::Style::Default | sf::Style::Default);
     this->window->setFramerateLimit(60);
     this->window->setVerticalSyncEnabled(true);
-
+    
+}
+void Game::initStates(){
+    this->states.push(new MainMenuState(this->window, &this->states));
 }
 
 void Game::run() {
@@ -63,7 +67,3 @@ void Game::handleEvents() {
 }
 
 bool Game::getRunning() { return this->isRunning; }
-
-void Game::initStates(){
-    this->states.push(new GameState(this->window));
-}

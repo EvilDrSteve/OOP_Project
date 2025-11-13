@@ -7,7 +7,7 @@ class GameState : public State {
     private:
         Character player;
     public:
-    GameState(sf::RenderWindow* window);
+    GameState(sf::RenderWindow* window, std::stack<State*>* states);
     virtual ~GameState();
 
     void endState();

@@ -5,10 +5,15 @@
 
 class State{
     protected:
+        std::stack<State*>* states;
+
         sf::RenderWindow* window;
         bool active;
+
+        sf::Vector2i mousePosWindow;
+        sf::Vector2f mousePosView;
     public:
-        State(sf::RenderWindow* window);
+        State(sf::RenderWindow* window, std::stack<State*>* states);
         virtual ~State();
 
         const bool& getActive() const;
@@ -17,6 +22,7 @@ class State{
         virtual void endState() = 0;
         virtual void update(const float& dt) = 0;
         virtual void updateInputs(const float& dt) = 0;
+        virtual void updateMousePos();
         virtual void render() = 0;
 
 };
