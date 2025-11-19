@@ -10,8 +10,7 @@ Player::Player(int x, int y, int gridSize){
     float pixelX = x * gridSize + gridSize / 2.0f;
     float pixelY = y * gridSize + gridSize / 2.0f;
 
-    this->shape.setSize(sf::Vector2f(16, 32));
-    this->shape.setScale(sf::Vector2f(3, 3));
+    this->shape.setSize(sf::Vector2f(gridSize, gridSize * 2));
     this->shape.setPosition(pixelX, pixelY);
 
     this->shape.setFillColor(sf::Color::Green);
