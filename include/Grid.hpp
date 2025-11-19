@@ -1,22 +1,48 @@
 #ifndef GRID_H
 #define GRID_H
 #include "Player.hpp"
+#include <climits>
+#include <algorithm>
+#include <cmath>
 
-class Grid{
-    private:
-        int width;
-        int height;
-        int size;
-        std::vector<Character*> characters;
-
-    public:
-        Grid(sf::RenderWindow* window, int size);
-        ~Grid();
-
-        void render(sf::RenderTarget* window);
-        void addCharacter(Character* character);
+struct Node {
+    int x, y;
+    bool walkable;
+    int gCost, hCost;
+    Node* parent;
+    
+    int fCost() const { return gCost + hCost; }
 };
 
+class Grid {
+private:
+    int width;
+    int height;
+    int size;
+    Player* player;
+    std::vector<Character*> characters;
+    std::vector<std::vector<Node>> nodes;  // 2D grid of nodes
+    
+    // Pathfinding helper methods
+    std::vector<Node*> getNeighbours(Node* node);
+    int manhattanDistance(Node* a, Node* b);
+    
+public:
+    Grid(sf::RenderWindow* window, int size);
+    ~Grid();
 
+    void update(const float& dt);
+    void render(sf::RenderTarget* window);
+    void addCharacter(Character* character);
+    
+    // Pathfinding methods
+    std::vector<sf::Vector2f> findPath(sf::Vector2f start, sf::Vector2f goal);
+    void setWalkable(int gridX, int gridY, bool walkable);
+    sf::Vector2f gridToPixel(int gx, int gy);
+    sf::Vector2i pixelToGrid(float px, float py);
+
+    void setPlayer(Player* player);
+    Player* getPlayer() const;
+};
 
 #endif
