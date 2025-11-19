@@ -7,7 +7,7 @@ MainMenuState::MainMenuState(sf::RenderWindow* window, std::stack<State*>* state
     this->rectangle.setSize(sf::Vector2f(window->getSize().x, window->getSize().y));
     this->rectangle.setFillColor(sf::Color(105, 80, 74));
 
-    this->button = new Button(340, 240, 100, 40, &this->font, "Start", sf::Color::Yellow);
+    this->button = new Button(512-100, 263, 200, 50, &this->font, "Start", sf::Color::Yellow);
 }
 
 MainMenuState::~MainMenuState(){

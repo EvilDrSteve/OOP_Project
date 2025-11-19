@@ -6,7 +6,7 @@ Button::Button(float x, float y, float width, float height, sf::Font* font, std:
     this->shape.setSize(sf::Vector2f(width, height));
     this->font = font;
     this->idleColor = sf::Color(241, 206, 131);
-    this->hoverColor = sf::Color(255, 218, 127);
+    this->hoverColor = sf::Color(204, 255, 0);
     this->activeColor = sf::Color(208, 178, 104);
     this->shape.setFillColor(idleColor);
 
