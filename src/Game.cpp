@@ -21,7 +21,7 @@ Game::~Game() {
 void Game::init() {
     this->isRunning = true;
     
-    this->window = new sf::RenderWindow(sf::VideoMode(800, 600, 32), "Diner Dash", sf::Style::Default | sf::Style::Default);
+    this->window = new sf::RenderWindow(sf::VideoMode(854, 480, 32), "Diner Dash", sf::Style::Default | sf::Style::Default);
     this->window->setFramerateLimit(60);
     this->window->setVerticalSyncEnabled(true);
     
@@ -45,6 +45,8 @@ void Game::update() {
         if(!this->states.top()->getActive()){
             delete this->states.top();
             this->states.pop();
+
+            if(this->states.empty()) this->isRunning = false;
         }
         
     }else this->isRunning = false;

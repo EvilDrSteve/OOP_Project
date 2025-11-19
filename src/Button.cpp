@@ -1,6 +1,7 @@
 #include "Button.hpp"
 #include <iostream>
 Button::Button(float x, float y, float width, float height, sf::Font* font, std::string buttonText, sf::Color color){
+    this->buttonState = 0;
     this->shape.setPosition(sf::Vector2f(x, y));
     this->shape.setSize(sf::Vector2f(width, height));
     this->font = font;
@@ -30,7 +31,6 @@ Button::Button(float x, float y, float width, float height, sf::Font* font, std:
 
     this->buttonText.setPosition(this->shape.getGlobalBounds().left + this->shape.getGlobalBounds().width / 2.f, this->shape.getGlobalBounds().top + this->shape.getGlobalBounds().height / 2.f);
 
-    this->buttonState = 0;
 }
 
 Button::~Button(){
