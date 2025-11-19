@@ -1,42 +1,97 @@
 #include "GameState.hpp"
+#include <iostream>
 
-GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states) : State(window, states), grid(window, 16){
+GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states) 
+    : State(window, states), grid(window, 48), mousePressed(false) {
     std::cout << "Game State Created" << std::endl;
-    // this->player = new Player(0, 0);
-    this->grid.addCharacter(new Player(10, 10));
     
+    Player* player = new Player(10, 10, 48);
+    this->grid.setPlayer(player);
+    
+    // Obstacles
+    for (int x = 5; x <= 7; x++) {
+        for (int y = 3; y <= 4; y++) {
+            this->grid.setWalkable(x, y, false);
+        }
+    }
+    
+    for (int x = 12; x <= 14; x++) {
+        for (int y = 3; y <= 4; y++) {
+            this->grid.setWalkable(x, y, false);
+        }
+    }
+    
+    for (int x = 5; x <= 7; x++) {
+        for (int y = 8; y <= 9; y++) {
+            this->grid.setWalkable(x, y, false);
+        }
+    }
+    
+    for (int x = 12; x <= 14; x++) {
+        for (int y = 8; y <= 9; y++) {
+            this->grid.setWalkable(x, y, false);
+        }
+    }
+    
+    for (int x = 8; x <= 11; x++) {
+        for (int y = 13; y <= 14; y++) {
+            this->grid.setWalkable(x, y, false);
+        }
+    }
+    
+    for (int x = 9; x <= 10; x++) {
+        for (int y = 1; y <= 2; y++) {
+            this->grid.setWalkable(x, y, false);
+        }
+    }
+    
+    for (int x = 1; x <= 1; x++) {
+        for (int y = 6; y <= 8; y++) {
+            this->grid.setWalkable(x, y, false);
+        }
+    }
 }
 
-GameState::~GameState(){
+GameState::~GameState() {
     this->endState();
-
-    // delete player;
 }
 
-void GameState::update(const float& dt){
+void GameState::update(const float& dt) {
     this->checkForQuit();
-
     this->updateMousePos();
     this->updateInputs(dt);
-    // this->player->update(dt);
+    this->grid.update(dt);
 }
 
-void GameState::render(){
-    // this->player->render(this->window);
+void GameState::render() {
     this->grid.render(this->window);
 }
 
-void GameState::endState(){
+void GameState::endState() {
     std::cout << "Game State Ended" << std::endl;
 }
 
-void GameState::updateInputs(const float& dt){
-//    if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-//         this->player->move(dt, -1, 0);
-//     if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-//         this->player->move(dt, 0, 1);
-//     if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-//         this->player->move(dt, 0, -1);
-//     if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-//         this->player->move(dt, 1, 0);
+void GameState::updateInputs(const float& dt) {
+    bool currentMouseState = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+    
+    //Only runs the frame mouse is pressed
+    if (currentMouseState && !mousePressed) {
+        
+        sf::Vector2i mousePos = sf::Mouse::getPosition(*this->window);
+        // sf::Vector2f mousePos = this->window->mapPixelToCoords(mousePixelPos);
+        
+        
+        Player* player = this->grid.getPlayer();
+        if (player) {
+            sf::Vector2f playerPos = player->getPosition();
+            
+            std::vector<sf::Vector2f> path = this->grid.findPath(playerPos, sf::Vector2f(mousePos.x, mousePos.y));
+            
+            if (!path.empty()) {
+                player->setPath(path);
+            }
+        }
+    }
+    
+    mousePressed = currentMouseState;
 }

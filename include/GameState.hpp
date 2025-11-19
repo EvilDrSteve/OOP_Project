@@ -5,15 +5,16 @@
 class GameState : public State {
     private:
         Grid grid;
+        bool mousePressed;
     public:
     GameState(sf::RenderWindow* window, std::stack<State*>* states);
     virtual ~GameState();
 
-    void endState();
+    void endState() override;
 
-    void update(const float& dt);
-    void updateInputs(const float& dt);
-    void render();
+    void update(const float& dt) override;
+    void updateInputs(const float& dt) override;
+    void render() override;
 };
 
 
