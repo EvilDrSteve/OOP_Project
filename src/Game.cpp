@@ -21,7 +21,7 @@ Game::~Game() {
 void Game::init() {
     this->isRunning = true;
     
-    this->window = new sf::RenderWindow(sf::VideoMode(854, 480, 32), "Diner Dash", sf::Style::Default | sf::Style::Default);
+    this->window = new sf::RenderWindow(sf::VideoMode(1024, 576, 32), "Diner Dash", sf::Style::Default | sf::Style::Default);
     this->window->setFramerateLimit(60);
     this->window->setVerticalSyncEnabled(true);
     
