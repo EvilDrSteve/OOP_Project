@@ -14,11 +14,14 @@ class Character {
         sf::Vector2f position;
         sf::RectangleShape shape;
     public:
+        Character() = default;
         Character(int x, int y, int width, int height);
         virtual ~Character();
 
         virtual void move(const float& dt, const float dirX, const float dirY) = 0;
         virtual void update(const float& dt) = 0;
         virtual void render(sf::RenderTarget* window);
+
+        sf::Vector2f getPosition() const;
 };
 #endif

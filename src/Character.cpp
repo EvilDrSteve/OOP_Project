@@ -12,3 +12,7 @@ Character::~Character(){
 void Character::render(sf::RenderTarget* window){
     window->draw(this->shape);
 }
+
+sf::Vector2f Character::getPosition() const{
+    return this->shape.getPosition();
+}
