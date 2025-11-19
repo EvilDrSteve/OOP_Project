@@ -53,9 +53,7 @@ sf::Vector2i Grid::pixelToGrid(float px, float py) {
 
 std::vector<Node*> Grid::getNeighbours(Node* node) {
     std::vector<Node*> neighbours;
-    int x = node->x;
-    int y = node->y;
-    
+
     if (node->x > 0) neighbours.push_back(&nodes[node->x - 1][node->y]);
     if (node->x < width - 1) neighbours.push_back(&nodes[node->x + 1][node->y]);
     if (node->y > 0) neighbours.push_back(&nodes[node->x][node->y - 1]);
