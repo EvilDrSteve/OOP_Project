@@ -1,11 +1,10 @@
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
 #include "State.hpp"
-#include "Character.hpp"
-
+#include "Grid.hpp"
 class GameState : public State {
     private:
-        Character player;
+        Grid grid;
     public:
     GameState(sf::RenderWindow* window, std::stack<State*>* states);
     virtual ~GameState();
