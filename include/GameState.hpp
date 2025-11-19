@@ -5,6 +5,7 @@
 class GameState : public State {
     private:
         Grid grid;
+        Player* player;
         bool mousePressed;
     public:
     GameState(sf::RenderWindow* window, std::stack<State*>* states);

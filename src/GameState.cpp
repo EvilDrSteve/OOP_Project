@@ -5,8 +5,8 @@ GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states)
     : State(window, states), grid(window, 48), mousePressed(false) {
     std::cout << "Game State Created" << std::endl;
     
-    Player* player = new Player(10, 10, 48);
-    this->grid.setPlayer(player);
+    this->player = new Player(10, 10, 48);
+    this->grid.setPlayer(this->player);
     
     // Obstacles
     for (int x = 5; x <= 7; x++) {
@@ -54,6 +54,7 @@ GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states)
 
 GameState::~GameState() {
     this->endState();
+    delete this->player;
 }
 
 void GameState::update(const float& dt) {
