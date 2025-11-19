@@ -13,12 +13,12 @@ class MainMenuState : public State {
     MainMenuState(sf::RenderWindow* window, std::stack<State*>* states);
     virtual ~MainMenuState();
 
-    void endState();
+    void endState() override;
     void checkForQuit() override;
 
-    void update(const float& dt);
-    void updateInputs(const float& dt);
-    void render();
+    void update(const float& dt) override;
+    void updateInputs(const float& dt) override;
+    void render() override;
 };
 
 
