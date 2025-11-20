@@ -155,9 +155,9 @@ void Grid::render(sf::RenderTarget* window) {
             cell.setPosition(x * this->size, y * this->size);
             
             if (!nodes[x][y].walkable) {
-                cell.setFillColor(sf::Color(255, 0,0 )); // brown
+                cell.setFillColor(sf::Color(96, 59, 42)); 
             } else {
-                cell.setFillColor(sf::Color(255, 255, 255)); // Beige
+                cell.setFillColor(sf::Color(193, 154, 107)); 
             }
             
             window->draw(cell);
