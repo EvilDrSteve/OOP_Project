@@ -5,9 +5,16 @@
 #include <algorithm>
 #include <cmath>
 
+enum TileType{
+    EMPTY,
+    TABLE,
+    SOLID
+};
+
 struct Node {
     int x, y;
-    bool walkable;
+    TileType tileType;
+    bool table;
     int gCost, hCost;
     Node* parent;
     
@@ -33,7 +40,7 @@ public:
 
     void update(const float& dt);
     void render(sf::RenderTarget* window);
-    
+    void updateInputs(sf::Vector2i mousePos);
     // Pathfinding methods
     std::vector<sf::Vector2f> findPath(sf::Vector2f start, sf::Vector2f goal);
     void setWalkable(int gridX, int gridY, bool walkable);

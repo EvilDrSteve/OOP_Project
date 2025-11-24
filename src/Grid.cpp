@@ -12,7 +12,7 @@ Grid::Grid(sf::RenderWindow* window, int size) {
         for (int y = 0; y < this->height; y++) {
             this->nodes[x][y].x = x;
             this->nodes[x][y].y = y;
-            this->nodes[x][y].walkable = true;
+            this->nodes[x][y].tileType = TileType::EMPTY;
             this->nodes[x][y].parent = nullptr;
             this->nodes[x][y].gCost = 0;
             this->nodes[x][y].hCost = 0;
@@ -48,13 +48,13 @@ void Grid::addTable(Table* table){
     this->tables.push_back(table);
     
     for(sf::Vector2f tile : table->getOccupiedTiles()){
-        this->nodes[tile.x][tile.y].walkable = false;
+        this->nodes[tile.x][tile.y].tileType = TileType::TABLE;
     }
 }
 
 void Grid::setWalkable(int gridX, int gridY, bool walkable) {
     if (gridX >= 0 && gridX < width && gridY >= 0 && gridY < height) {
-        this->nodes[gridX][gridY].walkable = walkable;
+        this->nodes[gridX][gridY].tileType = (walkable ? TileType::EMPTY : TileType::SOLID);
     }
 }
 
@@ -83,7 +83,8 @@ int Grid::manhattanDistance(Node* a, Node* b) {
 
 std::vector<sf::Vector2f> Grid::findPath(sf::Vector2f start, sf::Vector2f goal) {
     sf::Vector2i startGrid = pixelToGrid(start.x, start.y);
-    sf::Vector2i goalGrid = pixelToGrid(goal.x, goal.y);
+    // sf::Vector2i goalGrid = pixelToGrid(goal.x, goal.y);
+    sf::Vector2i goalGrid = sf::Vector2i(goal.x, goal.y);
     
     // Check if the start/goal are valid
     if (startGrid.x < 0 || startGrid.x >= width || startGrid.y < 0 || startGrid.y >= height || goalGrid.x < 0 || goalGrid.x >= width || goalGrid.y < 0 || goalGrid.y >= height) {
@@ -132,7 +133,7 @@ std::vector<sf::Vector2f> Grid::findPath(sf::Vector2f start, sf::Vector2f goal) 
         visitedNodes.push_back(current);
         
         for (Node* neighbour : getNeighbours(current)) {
-            if (!neighbour->walkable) continue;
+            if (neighbour->tileType != TileType::EMPTY) continue;
 
             //find function returns end iterator if item not found
             if (std::find(visitedNodes.begin(), visitedNodes.end(), neighbour) != visitedNodes.end()) continue;
@@ -151,6 +152,19 @@ std::vector<sf::Vector2f> Grid::findPath(sf::Vector2f start, sf::Vector2f goal) 
     }
     
     return {}; // Path not found
+}
+
+void Grid::updateInputs(sf::Vector2i mousePos){
+        sf::Vector2f playerPos = this->player->getPosition();
+        sf::Vector2i targetTile = pixelToGrid(mousePos.x, mousePos.y);
+        while(nodes[targetTile.x][targetTile.y].tileType == TileType::TABLE){
+            targetTile.y -= 1;
+        }
+        std::vector<sf::Vector2f> path = this->findPath(playerPos, sf::Vector2f(targetTile.x, targetTile.y));
+
+        if (!path.empty()) {
+            player->setPath(path);
+        }
 }
 
 void Grid::update(const float& dt){
@@ -174,7 +188,7 @@ void Grid::render(sf::RenderTarget* window) {
             sf::RectangleShape cell(sf::Vector2f(this->size - 1, this->size - 1));
             cell.setPosition(x * this->size, y * this->size);
             
-            if (!nodes[x][y].walkable) {
+            if (nodes[x][y].tileType != TileType::EMPTY) {
                 cell.setFillColor(sf::Color(96, 59, 42)); 
             } else {
                 cell.setFillColor(sf::Color(193, 154, 107)); 
