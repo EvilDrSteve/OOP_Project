@@ -1,7 +1,6 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 #include "Character.hpp"
-#include <vector>
 
 class Player : public Character {
 private:
