@@ -34,7 +34,6 @@ Grid::~Grid() {
         this->tables.pop_back();
     }
 
-    if(this->player != nullptr) delete this->player;
 }
 
 void Grid::initializeTables(){

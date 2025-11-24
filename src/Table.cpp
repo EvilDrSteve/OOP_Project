@@ -22,8 +22,9 @@ Table::Table(sf::Vector2f pos, int gridSize, bool big) {
         this->tableTexture.loadFromFile("assets/Table-Small.png");
     }
     this->tableSprite.setTexture(this->tableTexture);
-    this->tableSprite.setPosition(this->position - sf::Vector2f(32, this->gridSize));
-    this->tableSprite.setScale(sf::Vector2f(4.f, 4.f));
+    this->tableSprite.setOrigin(sf::Vector2f(8.f, 11.f));
+    this->tableSprite.setPosition(this->position);
+    this->tableSprite.setScale(sf::Vector2f(this->size.x / 48, this->size.y / (this->bigTable ? 48 : 32)));
 
 }
 

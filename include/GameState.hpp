@@ -5,6 +5,7 @@
 class GameState : public State {
     private:
         Grid* grid;
+        int gridSize;
         Player* player;
         bool mousePressed;
     public:

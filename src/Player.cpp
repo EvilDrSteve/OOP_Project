@@ -11,7 +11,7 @@ Player::Player(int x, int y, int gridSize, std::string name) : Character("assets
     float pixelY = y * gridSize + gridSize / 2.0f;
     
     this->sprite.setPosition(pixelX, pixelY);
-    this->sprite.setScale(sf::Vector2f(3.f,3.f));
+    this->sprite.setScale(sf::Vector2f(gridSize / 12.f, gridSize / 12.f));
     
     this->addAnimation("idle", 4, 16, 32, 0);
     this->animate(0);
