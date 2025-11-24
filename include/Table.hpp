@@ -5,7 +5,12 @@
 class Table {
     private:
         bool occupied;
+        bool bigTable;
         sf::RectangleShape shape;
+        sf::Sprite tableSprite;
+        sf::Sprite chairSprite;
+        sf::Texture tableTexture;
+        sf::Texture chairTexture;
         int gridSize;
     public:
         sf::Vector2f position;
