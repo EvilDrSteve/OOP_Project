@@ -42,7 +42,7 @@ std::vector<sf::Vector2f> Table::getOccupiedTiles() const {
         tiles.push_back(sf::Vector2f(((this->position.x + this->size.x) / this->gridSize), (this->position.y / this->gridSize) + 2));
     }else {
         tiles.push_back(sf::Vector2f((this->position.x / this->gridSize) - 1, (this->position.y / this->gridSize) + 1));
-        tiles.push_back(sf::Vector2f(((this->position.x + this->size.x) / this->gridSize) + 1, (this->position.y / this->gridSize) + 1));
+        tiles.push_back(sf::Vector2f(((this->position.x + this->size.x) / this->gridSize), (this->position.y / this->gridSize) + 1));
     }
     return tiles;
 }
