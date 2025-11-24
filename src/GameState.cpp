@@ -45,18 +45,17 @@ void GameState::updateInputs(const float& dt) {
         sf::Vector2i mousePos = sf::Mouse::getPosition(*this->window);
         // sf::Vector2f mousePos =
         // this->window->mapPixelToCoords(mousePixelPos);
+        this->grid->updateInputs(mousePos);
+        // if (player) {
+        //     sf::Vector2f playerPos = this->player->getPosition();
 
-        Player* player = this->grid->getPlayer();
-        if (player) {
-            sf::Vector2f playerPos = this->player->getPosition();
+        //     std::vector<sf::Vector2f> path = this->grid->findPath(
+        //         playerPos, sf::Vector2f(mousePos.x, mousePos.y));
 
-            std::vector<sf::Vector2f> path = this->grid->findPath(
-                playerPos, sf::Vector2f(mousePos.x, mousePos.y));
-
-            if (!path.empty()) {
-                player->setPath(path);
-            }
-        }
+        //     if (!path.empty()) {
+        //         player->setPath(path);
+        //     }
+        // }
     }
 
     mousePressed = currentMouseState;
