@@ -2,7 +2,7 @@
 #include "Animation.hpp"
 #include <cmath>
 
-Player::Player(int x, int y, int gridSize) : Character("assets/Modern tiles_Free/Characters_free/Adam_idle_16x16.png"){
+Player::Player(int x, int y, int gridSize, std::string name) : Character("assets/Modern tiles_Free/Characters_free/" + name + "_idle_16x16.png"){
     
     this->movementSpeed = 300.f; // pixels per second
     this->currentStep = 0;

@@ -4,7 +4,7 @@
 #include "Grid.hpp"
 class GameState : public State {
     private:
-        Grid grid;
+        Grid* grid;
         Player* player;
         bool mousePressed;
     public:

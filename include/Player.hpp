@@ -10,7 +10,7 @@ private:
     std::vector<sf::Vector2f>::size_type currentStep = 0;
     
 public:
-    Player(int x, int y, int gridSize = 16);
+    Player(int x, int y, int gridSize = 16, std::string name = "adam");
     ~Player();
 
     void move(const float& dt, const float x, const float y) override;

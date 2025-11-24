@@ -20,7 +20,6 @@ Grid::Grid(sf::RenderWindow* window, int size) {
     }
 
     this->player = nullptr;
-
 }
 
 
@@ -30,11 +29,28 @@ Grid::~Grid() {
         this->characters.pop_back();
     }
 
+    while(!this->tables.empty()){
+        delete this->tables.back();
+        this->tables.pop_back();
+    }
+
     // if(this->player != nullptr) delete this->player;
+}
+
+void Grid::initializeTables(){
+    this->tables.push_back(new Table(sf::Vector2f(5, 3), this->size, true));
 }
 
 void Grid::addCharacter(Character* character) {
     this->characters.push_back(character);
+}
+
+void Grid::addTable(Table* table){
+    this->tables.push_back(table);
+    
+    for(sf::Vector2f tile : table->getOccupiedTiles()){
+        this->nodes[tile.y][tile.x].walkable = false;
+    }
 }
 
 void Grid::setWalkable(int gridX, int gridY, bool walkable) {
@@ -145,8 +161,13 @@ void Grid::update(const float& dt){
     for (Character* character : this->characters) {
         character->update(dt);
     }
-
+    for (Table* table : this->tables) {
+        table->update(dt);
+    }
+    
 }
+
+
 
 void Grid::render(sf::RenderTarget* window) {
     for (int x = 0; x < this->width; x++) {
@@ -167,28 +188,32 @@ void Grid::render(sf::RenderTarget* window) {
     
     // // Draw grid lines
     // for (int j = 0; j <= this->height; j++) {
-    //     sf::VertexArray line(sf::Lines, 2);
-    //     line[0].position = sf::Vector2f(0, j * this->size);
-    //     line[1].position = sf::Vector2f(this->width * this->size, j * this->size);
-    //     line[0].color = sf::Color::Red;
-    //     line[1].color = sf::Color::Red;
-    //     window->draw(line);
-    // }
-
-    // for (int i = 0; i <= this->width; i++) {
-    //     sf::VertexArray line(sf::Lines, 2);
-    //     line[0].position = sf::Vector2f(i * this->size, 0);
-    //     line[1].position = sf::Vector2f(i * this->size, this->height * this->size);
-    //     line[0].color = sf::Color::Red;
-    //     line[1].color = sf::Color::Red;
-    //     window->draw(line);
-    // }
-
-    for (Character* character : this->characters) {
-        character->render(window);
-    }
-
-    player->render(window);
+        //     sf::VertexArray line(sf::Lines, 2);
+        //     line[0].position = sf::Vector2f(0, j * this->size);
+        //     line[1].position = sf::Vector2f(this->width * this->size, j * this->size);
+        //     line[0].color = sf::Color::Red;
+        //     line[1].color = sf::Color::Red;
+        //     window->draw(line);
+        // }
+        
+        // for (int i = 0; i <= this->width; i++) {
+            //     sf::VertexArray line(sf::Lines, 2);
+            //     line[0].position = sf::Vector2f(i * this->size, 0);
+            //     line[1].position = sf::Vector2f(i * this->size, this->height * this->size);
+            //     line[0].color = sf::Color::Red;
+            //     line[1].color = sf::Color::Red;
+            //     window->draw(line);
+            // }
+            
+            for (Character* character : this->characters) {
+                character->render(window);
+            }
+            
+            
+            for (Table* table : this->tables) {
+                table->render(window);
+            }
+            player->render(window);
 }
 
 

@@ -1,6 +1,6 @@
 #ifndef GRID_H
 #define GRID_H
-#include "Player.hpp"
+#include "Table.hpp"
 #include <climits>
 #include <algorithm>
 #include <cmath>
@@ -22,7 +22,7 @@ private:
     Player* player;
     std::vector<Character*> characters;
     std::vector<std::vector<Node>> nodes;  // 2D grid of nodes
-    
+    std::vector<Table*> tables;
     // Pathfinding helper methods
     std::vector<Node*> getNeighbours(Node* node);
     int manhattanDistance(Node* a, Node* b);
@@ -33,16 +33,19 @@ public:
 
     void update(const float& dt);
     void render(sf::RenderTarget* window);
-    void addCharacter(Character* character);
     
     // Pathfinding methods
     std::vector<sf::Vector2f> findPath(sf::Vector2f start, sf::Vector2f goal);
     void setWalkable(int gridX, int gridY, bool walkable);
     sf::Vector2f gridToPixel(int gx, int gy);
     sf::Vector2i pixelToGrid(float px, float py);
-
+    
     void setPlayer(Player* player);
     Player* getPlayer() const;
+    void addCharacter(Character* character);
+    void addTable(Table* table);
+
+    void initializeTables();
 };
 
 #endif
