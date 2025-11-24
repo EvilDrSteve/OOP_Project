@@ -10,17 +10,15 @@ GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states)
     this->player = new Player(10, 10, 48, "Adam");
     this->grid->setPlayer(this->player);
     this->grid->addCharacter(new Player(0, 7, 48, "Alex"));
-    this->grid->addTable(new Table(sf::Vector2f(5, 3), 48, true));
+    // this->grid->addTable(new Table(sf::Vector2f(5, 3), 48, true));
     this->grid->addTable(new Table(sf::Vector2f(10, 3), 48, false));
-    this->grid->addTable(new Table(sf::Vector2f(10, 6), 48, false));
-    this->grid->addTable(new Table(sf::Vector2f(10, 9), 48, false));
+    // this->grid->addTable(new Table(sf::Vector2f(10, 6), 48, false));
+    // this->grid->addTable(new Table(sf::Vector2f(10, 9), 48, false));
     
 }
 
 GameState::~GameState() {
     this->endState();
-    delete this->player;
-
     delete this->grid;
 }
 
