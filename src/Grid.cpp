@@ -49,7 +49,7 @@ void Grid::addTable(Table* table){
     this->tables.push_back(table);
     
     for(sf::Vector2f tile : table->getOccupiedTiles()){
-        this->nodes[tile.y][tile.x].walkable = false;
+        this->nodes[tile.x][tile.y].walkable = false;
     }
 }
 
