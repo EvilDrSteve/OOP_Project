@@ -23,6 +23,10 @@ GameState::~GameState() {
     this->endState();
     delete this->grid;
     delete this->player;
+    for (Customer* c : queueCustomers) {
+    delete c;
+}
+queueCustomers.clear();
 
 }
 
@@ -31,9 +35,57 @@ void GameState::update(const float& dt) {
     this->updateMousePos();
     this->updateInputs(dt);
     this->grid->update(dt);
+
+    const float QUEUE_X = 800.f;
+    const float START_Y = 50.f;
+    const float GAP_Y = 55.f;
+
+    // --- SPAWN LOGIC ---
+    frameCounter += dt;  
+    if (nextSpawn < pattern.size()) {
+        float interval = (nextSpawn == 0) ? 3.f : static_cast<float>(spawnIntervals[nextSpawn - 1]);
+
+        if (frameCounter >= interval) {
+
+            int size = pattern[nextSpawn];
+            Customer* c = new Customer(size);
+
+            // new: center based on sprite bounds
+            sf::FloatRect bounds = c->getSprite().getGlobalBounds();
+            float xPos = QUEUE_X - bounds.width / 2.f;
+
+
+            // place new customer at top instantly
+            c->setQueuePosition(xPos, START_Y);
+
+            // shift existing customers DOWN
+            for (auto& cust : queueCustomers) {
+                cust->targetYQueue += GAP_Y; 
+            }
+
+            queueCustomers.insert(queueCustomers.begin(), c);
+
+            nextSpawn++;
+            frameCounter = 0.f;
+        }
+    }
+
+    // This is REQUIRED so they move!
+    for (auto* cust : queueCustomers) {
+        cust->update(dt);
+    }
+
 }
 
-void GameState::render() { this->grid->render(this->window); }
+
+
+void GameState::render() { 
+    this->grid->render(this->window); 
+
+    for (Customer* c : queueCustomers) {
+        c->render(this->window);
+    }
+}
 
 void GameState::endState() { std::cout << "Game State Ended" << std::endl; }
 

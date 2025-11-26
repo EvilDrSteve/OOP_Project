@@ -20,6 +20,8 @@ class Table {
 
         void update(const float& dt);
         void render(sf::RenderTarget* window);
+        int getGridSize() const { return gridSize; }
+
 
         std::vector<sf::Vector2f> getOccupiedTiles() const;
     };
