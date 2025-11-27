@@ -20,6 +20,8 @@ public:
     void setPath(const std::vector<sf::Vector2f>& path);
     bool isMoving() const;
 
+    void initAnimations();
+
 };
 
 #endif
