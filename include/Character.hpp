@@ -7,6 +7,14 @@
 #include <cstdlib>
 #include <vector>
 
+
+enum Direction {
+    RIGHT,
+    UP,
+    LEFT,
+    DOWN
+};
+
 class Character {
     private:
     protected:
@@ -23,7 +31,7 @@ class Character {
         float frameTimer;   // elapsed time for current frame
         float baseScale;
 
-        int facing;
+        Direction direction;
     public:
         Character() = default;
         Character(int x, int y, int width, int height);
@@ -31,6 +39,7 @@ class Character {
         virtual ~Character();
 
         void addAnimation(const std::string& name, int frameCount, int frameWidth, int frameHeight, int startY);
+        void addAnimation(const std::string& name, int startX, int startY, int frameCount, int frameWidth, int frameHeight);
         void setAction(const std::string& action);
 
 

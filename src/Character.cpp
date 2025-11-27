@@ -3,7 +3,7 @@
 Character::Character(int x, int y, int width, int height){
     this->shape.setSize(sf::Vector2f(width, height));
     this->position = sf::Vector2f(x, y);
-    this->facing = 0;
+    this->direction = Direction::RIGHT;
 }
 Character::Character(const std::string &textureFile)
 {
@@ -20,15 +20,14 @@ Character::Character(const std::string &textureFile)
     
     
     currentFrame = 0;
-    frameTime = 0.1f; // each frame lasts 0.1 seconds
+    frameTime = 0.07f; // each frame lasts 0.1 seconds
     frameTimer = 0.f;
     
+    this->direction = Direction::RIGHT;
     currentAction = "idle";
-    this->facing = 0;
 }
 
 Character::~Character(){
-    this->facing = 0;
 
 }
 
@@ -39,6 +38,14 @@ void Character::addAnimation(const std::string &name, int frameCount, int frameW
     for (int i = 0; i < frameCount; i++)
     {
         frames.push_back(sf::IntRect(i * frameWidth, startY, frameWidth, frameHeight));
+    }
+    animations[name] = frames;
+}
+void Character::addAnimation(const std::string& name, int startX, int startY, int frameCount, int frameWidth, int frameHeight){
+    std::vector<sf::IntRect> frames;
+    for (int i = 0; i < frameCount; i++)
+    {
+        frames.push_back(sf::IntRect((i + startX) * frameWidth, startY * frameHeight, frameWidth, frameHeight));
     }
     animations[name] = frames;
 }
@@ -68,11 +75,11 @@ void Character::animate(const float& dt){
     {
         frameTimer = 0.f;
         currentFrame++;
-        if (currentFrame >= (int)animations[currentAction].size())
+        if (currentFrame >= (int)animations[currentAction + std::to_string(this->direction)].size())
         {
             currentFrame = 0;
         }
-        sprite.setTextureRect(animations[currentAction][currentFrame]);
+        sprite.setTextureRect(animations[currentAction + std::to_string(this->direction)][currentFrame]);
         sf::IntRect rect = sprite.getTextureRect();
 
         sprite.setOrigin(rect.width / 2.f, rect.height);
