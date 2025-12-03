@@ -17,6 +17,8 @@ class GameState : public State {
     void update(const float& dt) override;
     void updateInputs(const float& dt) override;
     void render() override;
+
+    void setupLevel();
 };
 
 

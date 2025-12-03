@@ -6,17 +6,10 @@ GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states)
     : State(window, states), mousePressed(false) {
     std::cout << "Game State Created" << std::endl;
 
-    this->gridSize = 32;
+    this->gridSize = 24;
     this->grid   = new Grid(window, this->gridSize);
-    this->player = new Player(10, 10, this->gridSize, "Adam");
-    this->grid->setPlayer(this->player);
-    this->grid->addCharacter(new Player(0, 7, this->gridSize, "Alex"));
-    this->grid->addTable(new Table(sf::Vector2f(9, 5), this->gridSize, true));
-    this->grid->addTable(new Table(sf::Vector2f(2, 3), this->gridSize, false));
-    this->grid->addTable(new Table(sf::Vector2f(2, 8), this->gridSize, false));
-    this->grid->addTable(new Table(sf::Vector2f(16, 3), this->gridSize, false));
-    this->grid->addTable(new Table(sf::Vector2f(16, 8), this->gridSize, false));
-    
+
+    this->setupLevel();
 }
 
 GameState::~GameState() {
@@ -24,6 +17,21 @@ GameState::~GameState() {
     delete this->grid;
     delete this->player;
 
+}
+
+void GameState::setupLevel(){
+
+    int startX = 10;
+    int startY = 5;
+    this->player = new Player(startX + 10, startY + 10, this->gridSize, "Adam");
+    this->grid->setPlayer(this->player);
+    this->grid->addCharacter(new Player(startX + 0, startY + 7, this->gridSize, "Alex"));
+    this->grid->addTable(new Table(sf::Vector2f(startX + 9, startY + 5), this->gridSize, true));
+    this->grid->addTable(new Table(sf::Vector2f(startX + 2, startY + 3), this->gridSize, false));
+    this->grid->addTable(new Table(sf::Vector2f(startX + 2, startY + 8), this->gridSize, false));
+    this->grid->addTable(new Table(sf::Vector2f(startX + 16,startY + 3), this->gridSize, false));
+    this->grid->addTable(new Table(sf::Vector2f(startX + 16,startY + 8), this->gridSize, false));
+    
 }
 
 void GameState::update(const float& dt) {
