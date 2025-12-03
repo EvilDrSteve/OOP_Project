@@ -5,7 +5,7 @@ CustomerQueue::CustomerQueue(int gridSize, sf::Vector2f startPos,
     this->queueStartPosition = sf::Vector2f(2.f, 2.f);
     this->spacing            = 4.f;
     this->spawnTimer         = 0.f;
-    this->spawnInterval      = interval;
+    this->spawnInterval      = 1.f;
     this->maxQueueSize       = 5;
     this->gridSize           = gridSize;
 }

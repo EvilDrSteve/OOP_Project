@@ -33,10 +33,11 @@ void Customer::setupCharacters() {
         character->addAnimation("idle1", 6, 1, 6, 16, 32);
         character->addAnimation("idle2", 12, 1, 6, 16, 32);
         character->addAnimation("idle3", 18, 1, 6, 16, 32);
-        character->addAnimation("walk0", 0, 2, 6, 16, 32);
-        character->addAnimation("walk1", 6, 2, 6, 16, 32);
-        character->addAnimation("walk2", 12, 2, 6, 16, 32);
-        character->addAnimation("walk3", 18, 2, 6, 16, 32);
+        character->addAnimation("sitting0", 0, 4, 6, 32, 32);
+        character->addAnimation("sitting1", 6, 4, 6, 32, 32);
+        character->addAnimation("sitting2", 0, 4, 6, 32, 32);
+        character->addAnimation("sitting3", 6, 4, 6, 32, 32);
+
         character->setAction("idle");
 
         character->setSpriteScale(this->gridSize);
@@ -49,22 +50,42 @@ void Customer::setupCharacters() {
     this->updateCharacterPositions();
 }
 void Customer::updateCharacterPositions() {
+
+    sf::Vector2f offset(0.75, 0.75);
+    if(this->occupiesTable){
+        if (groupSize == 2) {
+            characters[0]->setPosition(
+                sf::Vector2f(this->position.x - 0.35, this->position.y - 0.6));
+            characters[1]->setPosition(
+                sf::Vector2f(this->position.x + 3.35, this->position.y - 0.6));
+        } else if (groupSize == 4) {
+            characters[0]->setPosition(
+                sf::Vector2f(this->position.x - 0.35, this->position.y - offset.y));
+            characters[1]->setPosition(
+                sf::Vector2f(this->position.x + 3.35, this->position.y - offset.y));
+            characters[2]->setPosition(
+                sf::Vector2f(this->position.x - 0.35, this->position.y + offset.y));
+            characters[3]->setPosition(
+                sf::Vector2f(this->position.x + 3.35, this->position.y + offset.y));
+        }
+        
+    }else {
     if (groupSize == 2) {
         characters[0]->setPosition(
-            sf::Vector2f(this->position.x - 0.75, this->position.y));
+            sf::Vector2f(this->position.x - offset.x, this->position.y));
         characters[1]->setPosition(
-            sf::Vector2f(this->position.x + 0.75, this->position.y));
+            sf::Vector2f(this->position.x + offset.x, this->position.y));
     } else if (groupSize == 4) {
         characters[0]->setPosition(
-            sf::Vector2f(this->position.x - 0.75, this->position.y - 0.75));
+            sf::Vector2f(this->position.x - offset.x, this->position.y - offset.y));
         characters[1]->setPosition(
-            sf::Vector2f(this->position.x + 0.75, this->position.y - 0.75));
+            sf::Vector2f(this->position.x + offset.x, this->position.y - offset.y));
         characters[2]->setPosition(
-            sf::Vector2f(this->position.x - 0.75, this->position.y + 0.75));
+            sf::Vector2f(this->position.x - offset.x, this->position.y + offset.y));
         characters[3]->setPosition(
-            sf::Vector2f(this->position.x + 0.75, this->position.y + 0.75));
+            sf::Vector2f(this->position.x + offset.x, this->position.y + offset.y));
     }
-
+    }
 }
 
 void Customer::update(const float& dt){
@@ -147,8 +168,21 @@ int Customer::getGroupSize() const{
 void Customer::sitAtTable(Table* table){
     this->occupiesTable = table;
     this->occupiesTable->seatCustomer();
+    sf::Vector2f tablePos = occupiesTable->getPosition();
+
+    this->setPosition(tablePos);
+    this->setAction("sitting");
 }
 
 bool Customer::getIsDragging() const{
     return this->isDragging;
+}
+
+void Customer::setAction(const std::string& action){
+    for(size_t i = 0; i < this->characters.size(); i++){
+        this->characters[i]->setAction(action);
+        this->characters[i]->setDirection((Direction)(i%2));
+
+    }
+
 }

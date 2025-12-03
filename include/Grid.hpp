@@ -67,6 +67,7 @@ public:
 
     void update(const float& dt);
     void render(sf::RenderTarget* window);
+    void lateRender(sf::RenderTarget* window);
     void updateInputs(sf::Vector2i mousePos);
     // Pathfinding methods
     std::vector<sf::Vector2f> findPath(sf::Vector2f start, sf::Vector2f goal);

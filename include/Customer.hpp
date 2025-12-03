@@ -1,7 +1,6 @@
 #ifndef CUSTOMER_H
 #define CUSTOMER_H
 #include "Table.hpp"
-
 class CustomerCharacter : public Character {
 private:
     int gridSize;
@@ -47,7 +46,10 @@ void update(const float& dt) {
     sf::Sprite& getSprite() {
         return this->sprite; // Returns a reference to the sprite object
     }
-    
+    void setDirection(Direction direction){
+        this->direction = direction;
+    }
+
 };
 
 
@@ -90,6 +92,7 @@ class Customer{
         int getGroupSize() const;
 
         void sitAtTable(Table* table);
+        void setAction(const std::string& action);
 };
 #endif
 

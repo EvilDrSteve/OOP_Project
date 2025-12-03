@@ -51,9 +51,12 @@ std::vector<sf::Vector2f> Table::getOccupiedTiles() const {
 void Table::update(const float& dt) {}
 
 void Table::render(sf::RenderTarget* window) { 
-    this->tableSprite.setTexture(tableTexture);
-    window->draw(this->tableSprite);
     this->tableSprite.setTexture(chairTexture);
+    window->draw(this->tableSprite);
+}
+
+void Table::lateRender(sf::RenderTarget* window){
+    this->tableSprite.setTexture(tableTexture);
     window->draw(this->tableSprite);
  }
 
@@ -71,4 +74,8 @@ void Table::seatCustomer() {
 
 bool Table::getOccopied() const{
     return this->occupied;
+}
+
+sf::Vector2f Table::getPosition() const{
+    return sf::Vector2f((this->tableSprite.getPosition().x / this->gridSize), (this->tableSprite.getPosition().y / this->gridSize) + 2);
 }
