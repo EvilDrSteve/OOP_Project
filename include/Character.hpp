@@ -7,7 +7,7 @@
 #include <cstdlib>
 #include <vector>
 #include <cmath>
-
+#include <string.h>
 enum Direction {
     RIGHT,
     UP,

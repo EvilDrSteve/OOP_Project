@@ -24,6 +24,7 @@ class State{
         virtual void updateInputs(const float& dt) = 0;
         virtual void updateMousePos();
         virtual void render() = 0;
+        virtual void lateRender() = 0;
 
 };
 

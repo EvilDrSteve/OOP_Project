@@ -35,6 +35,7 @@ void Game::run() {
         this->updateClock();
         this->update();
         this->render();
+        this->lateRender();
     }
 }
 void Game::update() {
@@ -61,6 +62,10 @@ void Game::render() {
     this->window->clear();
 
     if(!this->states.empty()) this->states.top()->render();
+}
+void Game::lateRender() {
+   
+    if(!this->states.empty()) this->states.top()->lateRender();
     this->window->display();
 }
 

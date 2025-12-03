@@ -221,7 +221,7 @@ void Grid::handleMouseDrag(sf::Vector2f mousePos) {
 void Grid::handleMouseReleased(sf::Vector2f mousePos) {
     if (this->isDragging) {
         this->isDragging     = false;
-        this->selectedEntity = EntityType::NONE;
+        this->selectedEntity = EntityType::PLAYER;
         Table* tableToSeat   = nullptr;
         for (Table* table : this->tables) {
             if (table->getBounds().contains(mousePos)) {
@@ -238,6 +238,7 @@ void Grid::handleMouseReleased(sf::Vector2f mousePos) {
                 this->customerQueue->removeCustomer(this->draggedCustomer);
                 this->draggedCustomer->sitAtTable(tableToSeat);
                 this->seatedCustomers.push_back(this->draggedCustomer);
+                this->draggedCustomer->stopDrag();
                 return;
             }
         }
@@ -306,8 +307,15 @@ void Grid::render(sf::RenderTarget* window) {
     for (Customer* customer : this->seatedCustomers) {
         customer->render(window);
     }
-    player->render(window);
     this->customerQueue->render(window);
+}
+
+void Grid::lateRender(sf::RenderTarget* window){
+    for (Table* table : this->tables) {
+        table->lateRender(window);
+    }
+    player->render(window);
+
 }
 
 Player* Grid::getPlayer() const { return this->player; }

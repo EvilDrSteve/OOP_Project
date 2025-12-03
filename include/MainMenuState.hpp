@@ -19,6 +19,7 @@ class MainMenuState : public State {
     void update(const float& dt) override;
     void updateInputs(const float& dt) override;
     void render() override;
+    void lateRender() override;
 };
 
 

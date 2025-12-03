@@ -26,6 +26,7 @@ class Game {
         void init();
         void update();
         void render();
+        void lateRender();
         void handleEvents();
         void run();
         bool getRunning();

@@ -42,6 +42,7 @@ void GameState::update(const float& dt) {
 }
 
 void GameState::render() { this->grid->render(this->window); }
+void GameState::lateRender() { this->grid->lateRender(this->window); }
 
 void GameState::endState() { std::cout << "Game State Ended" << std::endl; }
 

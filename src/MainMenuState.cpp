@@ -36,6 +36,8 @@ void MainMenuState::render(){
 
     this->button->render(this->window);
 }
+void MainMenuState::lateRender(){
+}
 
 void MainMenuState::endState(){
     std::cout << "Main Menu State Ended" << std::endl;
