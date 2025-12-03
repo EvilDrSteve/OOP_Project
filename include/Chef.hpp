@@ -11,8 +11,11 @@ class Chef : public Character {
         Chef();
         ~Chef();
 
+
+        void update(const float& dt) override;
         void makeOrder();
         void deliverOrder();
+        void addOrder(Order* order);
 };
 
 #endif
