@@ -4,6 +4,8 @@ Character::Character(int x, int y, int width, int height){
     this->shape.setSize(sf::Vector2f(width, height));
     this->position = sf::Vector2f(x, y);
     this->direction = Direction::RIGHT;
+    
+
 }
 Character::Character(const std::string &textureFile)
 {
@@ -16,15 +18,18 @@ Character::Character(const std::string &textureFile)
     sprite.setTexture(texture);
     float scale = 1.f;      // <--- change this value to make character bigger
     sprite.setScale(scale, scale);
-    baseScale = scale;      // store it (we will use it in flipping)
+    baseScale = scale;     
     
     
     currentFrame = 0;
-    frameTime = 0.07f; // each frame lasts 0.1 seconds
+    frameTime = 0.07f; 
     frameTimer = 0.f;
     
     this->direction = Direction::RIGHT;
-    currentAction = "idle";
+    this->currentAction = "idle";
+    sprite.setTextureRect(sf::IntRect(0, 0, 0, 0));
+
+
 }
 
 Character::~Character(){
@@ -34,6 +39,7 @@ Character::~Character(){
 
 void Character::addAnimation(const std::string &name, int frameCount, int frameWidth, int frameHeight, int startY)
 {
+
     std::vector<sf::IntRect> frames;
     for (int i = 0; i < frameCount; i++)
     {
@@ -57,7 +63,10 @@ void Character::setAction(const std::string &action)
         currentAction = action;
         currentFrame = 0;
         frameTimer = 0.f;
+
     }
+
+    
 }
 
 void Character::render(sf::RenderTarget* window){
@@ -86,4 +95,3 @@ void Character::animate(const float& dt){
 
     }
 }
-

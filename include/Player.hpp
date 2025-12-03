@@ -22,6 +22,8 @@ public:
 
     void initAnimations();
 
+    sf::Sprite& getSprite();
+
 };
 
 #endif

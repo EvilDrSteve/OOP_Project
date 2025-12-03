@@ -1,6 +1,5 @@
 #include "Player.hpp"
 #include "Animation.hpp"
-#include <cmath>
 
 Player::Player(int x, int y, int gridSize, std::string name) : Character("assets/Modern tiles_Free/Characters_free/" + name + "_16x16.png"){
     
@@ -85,4 +84,10 @@ void Player::initAnimations(){
     this->addAnimation("walk1", 6, 2, 6, 16, 32);
     this->addAnimation("walk2", 12, 2, 6, 16, 32);
     this->addAnimation("walk3", 18, 2, 6, 16, 32);
+    this->sprite.setTextureRect(animations[currentAction + std::to_string(this->direction)][currentFrame]);
+
+}
+
+sf::Sprite& Player::getSprite(){
+    return this->sprite;
 }

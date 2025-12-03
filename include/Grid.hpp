@@ -4,6 +4,13 @@
 #include <climits>
 #include <algorithm>
 #include <cmath>
+#include "CustomerQueue.hpp"
+enum EntityType {
+    NONE,
+    PLAYER,
+    CUSTOMER,
+    CHEF
+};
 
 enum TileType{
     EMPTY,
@@ -27,13 +34,33 @@ private:
     int height;
     int size;
     Player* player;
+
+    CustomerQueue* customerQueue;
+    std::vector<Customer*> seatedCustomers;
+
     std::vector<Character*> characters;
     std::vector<std::vector<Node>> nodes;  // 2D grid of nodes
     std::vector<Table*> tables;
     // Pathfinding helper methods
     std::vector<Node*> getNeighbours(Node* node);
     int manhattanDistance(Node* a, Node* b);
+
+    //Selection
+    EntityType selectedEntity;
+    Customer* selectedCustomer;
+
+    // Drag state
+    bool isDragging;
+    Customer* draggedCustomer;
+    sf::Vector2f dragOffset;
+
+    //Mouse
+    bool mousePressed;
     
+
+    void handleMousePressed(sf::Vector2f mousePos);
+    void handleMouseDrag(sf::Vector2f mousePos);
+    void handleMouseReleased(sf::Vector2f mousePos);
 public:
     Grid(sf::RenderWindow* window, int size);
     ~Grid();
@@ -53,6 +80,7 @@ public:
     void addTable(Table* table);
 
     void initializeTables();
+
 };
 
 #endif

@@ -56,3 +56,19 @@ void Table::render(sf::RenderTarget* window) {
     this->tableSprite.setTexture(chairTexture);
     window->draw(this->tableSprite);
  }
+
+sf::FloatRect Table::getBounds() const{
+    return this->tableSprite.getGlobalBounds();
+}
+
+int Table::getSize() const {
+    return this->bigTable ? 4 : 2;
+}
+
+void Table::seatCustomer() {
+    this->occupied = true;
+}
+
+bool Table::getOccopied() const{
+    return this->occupied;
+}

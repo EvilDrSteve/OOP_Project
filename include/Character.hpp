@@ -6,7 +6,7 @@
 #include <stack>
 #include <cstdlib>
 #include <vector>
-
+#include <cmath>
 
 enum Direction {
     RIGHT,
