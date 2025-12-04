@@ -2,13 +2,14 @@
 #define GAMESTATE_H
 #include "State.hpp"
 #include "Grid.hpp"
-
-
+#include <SFML/Audio.hpp>
+#include "Chef.hpp"
 
 
 class GameState : public State {
     private:
         Grid* grid;
+        sf::Music musicPlayer;
         int gridSize;
         Player* player;
 
@@ -16,6 +17,7 @@ class GameState : public State {
 
         bool gameStarted;
 
+        float gameTimer;
     public:
     GameState(sf::RenderWindow* window, std::stack<State*>* states);
     virtual ~GameState();

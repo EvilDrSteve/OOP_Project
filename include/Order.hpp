@@ -1,27 +1,44 @@
-#ifndef ORDER_H
-#define ORDER_H
+#ifndef ORDER_HPP
+#define ORDER_HPP
 
-#include "Table.hpp"
-enum OrderStatus {
-    Pending,
-    Cooking,
-    Completed
+#include <SFML/Graphics.hpp>
+#include <Customer.hpp>
+
+enum class OrderStatus {
+    PENDING,        // Order taken, waiting to be dropped at kitchen
+    COOKING,        // In the kitchen being prepared
+    READY,          // Ready for pickup
+    DELIVERED       // Delivered to customer
 };
 
 class Order {
-    private:
-        Table* tableNo;
-        OrderStatus status;
+private:
+    static int nextOrderId;
+    
+    int orderId;
+    Table* table;
+    Customer* customer;
+    OrderStatus status;
+    float cookTime;         
+    float cookProgress;     
+    
+public:
+    Order(Table* table, Customer* customer, float cookTime = 5.0f);
+    
+    void update(const float& dt);
+    
+public:
+    int getId() const;
+    Table* getTable() const;
+    Customer* getCustomer() const;
+    OrderStatus getStatus() const;
+    float getCookProgress() const;
+    bool isReady() const;
 
-        sf::Vector2f position;
+    void setStatus(OrderStatus newStatus);
+    void startCooking();
+    void markDelivered();
 
-        sf::Texture texture;
-        sf::Sprite sprite;
-    public:
-        Order();
-        ~Order();
-
-        void update(const float& dt);
-        void moveWith(sf::Vector2f target);
 };
+
 #endif

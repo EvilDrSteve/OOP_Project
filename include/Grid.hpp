@@ -1,18 +1,31 @@
-#ifndef GRID_H
-#define GRID_H
-#include "Table.hpp"
+#ifndef GRID_HPP
+#define GRID_HPP
+
+#include <SFML/Graphics.hpp>
+#include <vector>
 #include <climits>
 #include <algorithm>
-#include <cmath>
+#include "Character.hpp"
+#include "Player.hpp"
+#include "Table.hpp"
+#include "Customer.hpp"
 #include "CustomerQueue.hpp"
-enum EntityType {
+#include "Kitchen.hpp"
+#include "Sink.hpp"
+#include "Order.hpp"
+#include "Inventory.hpp"
+
+enum class EntityType {
     NONE,
     PLAYER,
     CUSTOMER,
-    CHEF
+    CHEF,
+    KITCHEN,
+    SINK,
+    TABLE
 };
 
-enum TileType{
+enum class TileType{
     EMPTY,
     TABLE,
     SOLID
@@ -30,58 +43,101 @@ struct Node {
 
 class Grid {
 private:
+    std::vector<std::vector<Node>> nodes;
+    std::vector<Character*> characters;
+    std::vector<Table*> tables;
+    std::vector<Customer*> seatedCustomers;
+    std::vector<Customer*> leftCustomers;  // Customers who left but dishes remain
+    
+    CustomerQueue* customerQueue;
+    Kitchen* kitchen;
+    Sink* sink;
+    
+    Player* player;
+    EntityType selectedEntity;
+    Table* selectedTable;
+    Customer* selectedCustomer;
+    Customer* draggedCustomer;
+    
     int width;
     int height;
     int size;
-    Player* player;
-
-    CustomerQueue* customerQueue;
-    std::vector<Customer*> seatedCustomers;
-
-    std::vector<Character*> characters;
-    std::vector<std::vector<Node>> nodes;  // 2D grid of nodes
-    std::vector<Table*> tables;
-    // Pathfinding helper methods
-    std::vector<Node*> getNeighbours(Node* node);
-    int manhattanDistance(Node* a, Node* b);
-
-    //Selection
-    EntityType selectedEntity;
-    Customer* selectedCustomer;
-
-    // Drag state
-    bool isDragging;
-    Customer* draggedCustomer;
-    sf::Vector2f dragOffset;
-
-    //Mouse
     bool mousePressed;
-    
+    bool isDragging;
+    bool playerWasMoving;
 
-    void handleMousePressed(sf::Vector2f mousePos);
-    void handleMouseDrag(sf::Vector2f mousePos);
-    void handleMouseReleased(sf::Vector2f mousePos);
+    // Game stats
+    int totalMoney;
+    int totalTips;
+
+    //Floor
+    sf::Texture floorTexture;
+    sf::Sprite floorSprite;
+    sf::Font font;
+
+    sf::Texture kitchenTexture;
+    sf::Sprite kitchenSprite;
+
+    sf::Texture carpetTexture;
+    sf::Sprite carpetSprite;
+    sf::FloatRect kitchenBounds;
+
 public:
     Grid(sf::RenderWindow* window, int size);
     ~Grid();
+    
+    void initializeTables();
+    void initializeKitchen();
+    void initializeSink();
+    void initFont();
 
-    void update(const float& dt);
-    void render(sf::RenderTarget* window);
-    void lateRender(sf::RenderTarget* window);
-    void updateInputs(sf::Vector2i mousePos);
-    // Pathfinding methods
-    std::vector<sf::Vector2f> findPath(sf::Vector2f start, sf::Vector2f goal);
+    void addCharacter(Character* character);
+    void addTable(Table* table);
     void setWalkable(int gridX, int gridY, bool walkable);
+    
+    // Coordinate conversions
     sf::Vector2f gridToPixel(int gx, int gy);
     sf::Vector2i pixelToGrid(float px, float py);
     
-    void setPlayer(Player* player);
+    // Pathfinding
+    std::vector<Node*> getNeighbours(Node* node);
+    int manhattanDistance(Node* a, Node* b);
+    std::vector<sf::Vector2f> findPath(sf::Vector2f start, sf::Vector2f goal);
+    
+    // Input handling
+    void handleMousePressed(sf::Vector2f mousePos);
+    void handleMouseDrag(sf::Vector2f mousePos);
+    void handleMouseReleased(sf::Vector2f mousePos);
+    void updateInputs(sf::Vector2i mousePos);
+    
+    // Interaction handlers
+    void handleTableInteraction(Table* table);
+    void handleKitchenInteraction();
+    void handleSinkInteraction();
+    
+    // Move player to target and perform action
+    void movePlayerTo(sf::Vector2f gridTarget, PlayerAction action);
+    void movePlayerToTable(Table* table);
+    void movePlayerToKitchen();
+    void movePlayerToSink();
+    
+    // Game logic
+    void processCustomerPayment(Customer* customer);
+    void removeLeftCustomer(Customer* customer);
+    
+    void update(const float& dt);
+    void render(sf::RenderTarget* window);
+    void lateRender(sf::RenderTarget* window);
+    void renderUI(sf::RenderTarget* window);
+    
+    // Getters/Setters
     Player* getPlayer() const;
-    void addCharacter(Character* character);
-    void addTable(Table* table);
-
-    void initializeTables();
-
+    void setPlayer(Player* player);
+    Kitchen* getKitchen() const { return kitchen; }
+    Sink* getSink() const { return sink; }
+    
+    int getTotalMoney() const { return totalMoney; }
+    int getTotalTips() const { return totalTips; }
 };
 
 #endif

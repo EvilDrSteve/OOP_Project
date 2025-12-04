@@ -61,11 +61,35 @@ void Button::update(const sf::Vector2f mousePos){
     }
 }
 
+// void Button::render(sf::RenderTarget* target){
+//     target->draw(this->shape);
+//     target->draw(this->buttonText);
+// }
+
 void Button::render(sf::RenderTarget* target){
-    target->draw(this->shape);
-    target->draw(this->buttonText);
+    if (useTexture) {
+        target->draw(buttonSprite); 
+    } else {
+        target->draw(shape);        
+        target->draw(buttonText);   
+    }
 }
 
 bool Button::isPressed() const{
     return this->buttonState == 2;
+}
+
+void Button::setTexture(const std::string& path) {
+    if (buttonTex.loadFromFile(path)) {
+        buttonSprite.setTexture(buttonTex);
+        buttonSprite.setPosition(shape.getPosition());
+
+        // Scale the sprite to fit the original rectangle
+        buttonSprite.setScale(
+            shape.getSize().x / buttonTex.getSize().x,
+            shape.getSize().y / buttonTex.getSize().y
+        );
+
+        useTexture = true;
+    }
 }

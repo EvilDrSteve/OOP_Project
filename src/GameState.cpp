@@ -1,16 +1,26 @@
 #include "GameState.hpp"
-
+#include "EndState.hpp"
+#include "Chef.hpp"
 #include <iostream>
-
 GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states)
     : State(window, states), mousePressed(false) {
     std::cout << "Game State Created" << std::endl;
 
     this->gameStarted = false;
-    this->gridSize = 24;
+    this->gridSize = 32;
     this->grid   = new Grid(window, this->gridSize);
-
+    // After creating the grid
+    grid->initializeKitchen();
+    grid->initializeSink();
     this->setupLevel();
+    if (!musicPlayer.openFromFile("assets/bgMusic.mp3")) {
+        std::cout << "Failed to load music\n";
+    }
+
+    musicPlayer.play();
+    musicPlayer.setLoop(true);
+    Chef* chefAlex = new Chef(11, 3, this->gridSize, "Alex");
+    this->grid->addCharacter(chefAlex);
 }
 
 GameState::~GameState() {
@@ -39,6 +49,13 @@ void GameState::update(const float& dt) {
     this->updateMousePos();
     this->updateInputs(dt);
     this->grid->update(dt);
+    
+    this->gameTimer += dt;
+
+    if(gameTimer > 300){
+        this->active = false;
+        // states->push(new EndState(this->window, states, 0, 0, 0));
+    }
 }
 
 void GameState::render() { this->grid->render(this->window); }

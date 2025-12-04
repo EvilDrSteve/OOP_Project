@@ -4,9 +4,9 @@ CustomerQueue::CustomerQueue(int gridSize, sf::Vector2f startPos,
                              float interval) {
     this->queueStartPosition = sf::Vector2f(2.f, 2.f);
     this->spacing            = 4.f;
-    this->spawnTimer         = 0.f;
-    this->spawnInterval      = 1.f;
-    this->maxQueueSize       = 5;
+    this->spawnTimer         = 5.f;
+    this->spawnInterval      = 5 + (rand() % 5);
+    this->maxQueueSize       = 4;
     this->gridSize           = gridSize;
 }
 
@@ -41,8 +41,11 @@ void CustomerQueue::render(sf::RenderTarget* window) {
 }
 
 void CustomerQueue::spawnCustomer() {
-
-    Customer* newCustomer = new Customer(4 - ((rand() % 2) * 2), this->gridSize);
+    int size = 2;
+    if(rand() % 10 > 7){
+        size = 4;
+    }
+    Customer* newCustomer = new Customer(size, this->gridSize);
     this->waitingCustomers.push_back(newCustomer);
     this->updateQueuePositions();
 }
