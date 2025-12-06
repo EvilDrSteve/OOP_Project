@@ -147,6 +147,7 @@ private:
     // Money
     int getBillAmount() const { return billAmount; }
     int getTipAmount() const { return tipAmount; }
+    bool leftWithoutPaying = false;
     
     // Patience/anger
     float getPatienceRatio() const { return patienceTimer / maxPatience; }

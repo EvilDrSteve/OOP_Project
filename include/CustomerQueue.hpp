@@ -3,6 +3,8 @@
 #include "Customer.hpp"
 #include <deque>
 
+class Grid;
+
 class CustomerQueue {
     private:
         std::deque<Customer*> waitingCustomers;
@@ -12,6 +14,7 @@ class CustomerQueue {
         float spawnInterval;
         size_t maxQueueSize;
 
+        Grid* grid;
         int gridSize;
 
     public:     
@@ -27,6 +30,7 @@ class CustomerQueue {
         Customer* getCustomerAtPos(sf::Vector2f pos);
         void updateQueuePositions();
         void removeCustomer(Customer* customer);
+        void setGrid(Grid* grid);
 };
 
 

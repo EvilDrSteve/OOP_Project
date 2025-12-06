@@ -1,4 +1,5 @@
 #include "CustomerQueue.hpp"
+#include "Grid.hpp"
 
 CustomerQueue::CustomerQueue(int gridSize, sf::Vector2f startPos,
                              float interval) {
@@ -8,6 +9,7 @@ CustomerQueue::CustomerQueue(int gridSize, sf::Vector2f startPos,
     this->spawnInterval      = 5 + (rand() % 5);
     this->maxQueueSize       = 4;
     this->gridSize           = gridSize;
+    this->grid               = nullptr;
 }
 
 CustomerQueue::~CustomerQueue() {
@@ -29,8 +31,19 @@ void CustomerQueue::update(const float& dt) {
     }
 
     //Update customers
-    for (Customer* customer : this->waitingCustomers) {
+    for (int i = 0; i < this->waitingCustomers.size(); i++) {
+        Customer* customer = this->waitingCustomers[i];
         customer->update(dt);
+
+        if (customer->leftWithoutPaying || customer->getState() == CustomerState::LEFT) {
+            if (customer->leftWithoutPaying && this->grid) {
+                this->grid->incrementTablesLost();
+            }
+            delete customer;
+            this->waitingCustomers.erase(this->waitingCustomers.begin() + i);
+            this->updateQueuePositions();
+            i--;  
+        }
     }
 }
 
@@ -89,4 +102,8 @@ void CustomerQueue::removeCustomer(Customer* customer) {
         waitingCustomers.erase(it);
     }
     updateQueuePositions();
+}
+
+void CustomerQueue::setGrid(Grid* grid) {
+    this->grid = grid;
 }

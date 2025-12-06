@@ -1,4 +1,5 @@
 #include "GameState.hpp"
+#include "EndState.hpp"
 #include "Chef.hpp"
 #include <iostream>
 GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states)
@@ -63,6 +64,10 @@ void GameState::update(const float& dt) {
     this->gameTimer += dt;
     if(gameTimer > 300){
         this->active = false;
+        states->push(new EndState(this->window, states, 
+                                  this->grid->getTablesServed(), 
+                                  this->grid->getTablesLost(), 
+                                  this->grid->getTotalScore()));
     }
 }
 

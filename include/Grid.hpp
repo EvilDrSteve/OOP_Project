@@ -69,6 +69,8 @@ private:
     // Game stats
     int totalMoney;
     int totalTips;
+    int tablesServed;
+    int tablesLost;
 
     //Floor
     sf::Texture floorTexture;
@@ -136,6 +138,10 @@ public:
     
     int getTotalMoney() const { return totalMoney; }
     int getTotalTips() const { return totalTips; }
+    int getTablesServed() const;
+    int getTablesLost() const;
+    int getTotalScore() const;
+    void incrementTablesLost();
 };
 
 #endif

@@ -16,6 +16,8 @@ Grid::Grid(sf::RenderWindow* window, int size) {
     // Initialize game stats
     this->totalMoney = 0;
     this->totalTips  = 0;
+    this->tablesServed = 0;  
+    this->tablesLost = 0;
 
     this->nodes.resize(this->width);
 
@@ -37,6 +39,7 @@ Grid::Grid(sf::RenderWindow* window, int size) {
     this->selectedEntity = EntityType::NONE;
     this->customerQueue =
     new CustomerQueue(this->size, sf::Vector2f(2.f, 2.f), 5.f);
+    this->customerQueue->setGrid(this);
     
     //Initialize sprites and fonts
     this->floorTexture.loadFromFile("assets/floor.png");
@@ -398,6 +401,7 @@ void Grid::processCustomerPayment(Customer* customer) {
     // Add money
     totalMoney += customer->getBillAmount();
     totalTips += customer->getTipAmount();
+    this->tablesServed++;
 
     // Move customer from seated to left
     auto it =
@@ -564,6 +568,18 @@ void Grid::update(const float& dt) {
         character->update(dt);
     }
 
+    for (int i = 0; i < (int)this->seatedCustomers.size(); ++i) {
+        Customer* c = this->seatedCustomers[i];
+        if (c->getState() == CustomerState::LEFT) {
+            if (c->leftWithoutPaying) {
+                this->tablesLost++; // count as lost if they left without paying
+            }
+            delete c;
+            this->seatedCustomers.erase(this->seatedCustomers.begin() + i);
+            --i;
+        }
+    }
+
     for (Customer* customer : this->seatedCustomers) {
         customer->update(dt);
     }
@@ -664,3 +680,19 @@ void Grid::initFont() {
 Player* Grid::getPlayer() const { return this->player; }
 
 void Grid::setPlayer(Player* player) { this->player = player; }
+
+int Grid::getTablesServed() const {
+    return this->tablesServed;
+}
+
+int Grid::getTablesLost() const {
+    return this->tablesLost;
+}
+
+int Grid::getTotalScore() const {
+    return this->totalMoney + this->totalTips;
+}
+
+void Grid::incrementTablesLost() {
+    this->tablesLost++;
+}

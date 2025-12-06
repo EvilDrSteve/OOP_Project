@@ -214,6 +214,29 @@ void Customer::update(const float& dt) {
     updateIndicator();
     
     if (patienceTimer < 0) patienceTimer = 0;
+
+    if (patienceTimer == 0 && state != CustomerState::PAID &&
+        state != CustomerState::LEFT && occupiesTable) {
+
+        bool hasPlacedOrder =
+            (state == CustomerState::ORDER_TAKEN ||
+            state == CustomerState::FOOD_DELIVERED ||
+            state == CustomerState::READY_TO_PAY);
+
+        if (occupiesTable) {
+            if (hasPlacedOrder) {
+                occupiesTable->setState(TableState::DIRTY);
+                occupiesTable->clearTable(); 
+            } else {
+                occupiesTable->clearTable();
+                occupiesTable->setState(TableState::EMPTY);
+            }
+        }
+
+        occupiesTable = nullptr;
+        this->leftWithoutPaying = true;
+        setState(CustomerState::LEFT);
+    }
 }
 
 void Customer::render(sf::RenderTarget* window) {
