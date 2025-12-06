@@ -62,7 +62,7 @@ void GameState::update(const float& dt) {
     
     //End the game after 5 minutes
     this->gameTimer += dt;
-    if(gameTimer > 300){
+    if(gameTimer > 30){
         this->active = false;
         states->push(new EndState(this->window, states, 
                                   this->grid->getTablesServed(), 

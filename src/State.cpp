@@ -15,8 +15,21 @@ State::~State(){
 
 // Check if this state should close
 void State::checkForQuit(){
+
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
         this->active = false;
+
+    // if Q pressed, quit the entire application:
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q)){
+        if(this->states){
+            while(!this->states->empty()){
+                delete this->states->top();
+                this->states->pop();
+            }
+        }
+        if(this->window)
+            this->window->close();
+    }
 }
 
 const bool& State::getActive() const{
