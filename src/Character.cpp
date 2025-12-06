@@ -9,6 +9,7 @@ Character::Character(int x, int y, int width, int height){
 }
 Character::Character(const std::string &textureFile)
 {
+    //Initialize character from texture file and set current state to idle
     this->position = sf::Vector2f(0, 0);
     
     if (!texture.loadFromFile(textureFile))
@@ -16,7 +17,7 @@ Character::Character(const std::string &textureFile)
     {
     }
     sprite.setTexture(texture);
-    float scale = 1.f;      // <--- change this value to make character bigger
+    float scale = 1.f;      
     sprite.setScale(scale, scale);
     baseScale = scale;     
     
@@ -36,7 +37,7 @@ Character::~Character(){
 
 }
 
-
+//Add animation based on the provided frame details
 void Character::addAnimation(const std::string &name, int frameCount, int frameWidth, int frameHeight, int startY)
 {
 
@@ -47,6 +48,8 @@ void Character::addAnimation(const std::string &name, int frameCount, int frameW
     }
     animations[name] = frames;
 }
+
+//Add animation based on the provided frame details and frame start coordinates
 void Character::addAnimation(const std::string& name, int startX, int startY, int frameCount, int frameWidth, int frameHeight){
     std::vector<sf::IntRect> frames;
     for (int i = 0; i < frameCount; i++)
@@ -56,6 +59,7 @@ void Character::addAnimation(const std::string& name, int startX, int startY, in
     animations[name] = frames;
 }
 
+//Set the current action of the character
 void Character::setAction(const std::string &action)
 {
     if (currentAction != action)
@@ -78,7 +82,7 @@ sf::Vector2f Character::getPosition() const{
 }
 
 void Character::animate(const float& dt){
-     // Animate
+     // Animate the Character
     frameTimer += dt;
     if (frameTimer >= frameTime)
     {
@@ -88,6 +92,8 @@ void Character::animate(const float& dt){
         {
             currentFrame = 0;
         }
+
+        //Set the current frame based on the action and direction
         sprite.setTextureRect(animations[currentAction + std::to_string(this->direction)][currentFrame]);
         sf::IntRect rect = sprite.getTextureRect();
 

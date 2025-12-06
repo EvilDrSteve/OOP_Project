@@ -1,5 +1,4 @@
 #include "Player.hpp"
-#include "Animation.hpp"
 #include "Kitchen.hpp"
 #include "Sink.hpp"
 #include "Order.hpp"
@@ -9,6 +8,7 @@
 Player::Player(int x, int y, int gridSize, std::string name) 
     : Character("assets/Modern tiles_Free/Characters_free/" + name + "_16x16.png") {
     
+    //Initialize all variables
     this->movementSpeed = 250.f;
     this->currentStep = 0;
     this->pendingAction = PlayerAction::NONE;
@@ -42,16 +42,20 @@ Player::Player(int x, int y, int gridSize, std::string name)
 
 Player::~Player() {}
 
+//Move the playes based on the given direction
 void Player::move(const float& dt, const float x, const float y) {
     this->sprite.move(x * this->movementSpeed * dt, y * this->movementSpeed * dt);
 }
 
+
+// Set the players movmement path
 void Player::setPath(const std::vector<sf::Vector2f>& path) {
     this->currentPath = path;
     this->currentStep = 0;
     this->pendingAction = PlayerAction::NONE;
 }
 
+//Move to an object and interact
 void Player::setDestination(const std::vector<sf::Vector2f>& path, PlayerAction action) {
     this->currentPath = path;
     this->currentStep = 0;
@@ -73,6 +77,7 @@ void Player::update(const float& dt) {
         float distanceToTarget = std::sqrt(diff.x * diff.x + diff.y * diff.y);
         
         float moveDistance = movementSpeed * dt;
+
         if (moveDistance >= distanceToTarget) {
             this->sprite.setPosition(target);
             currentStep++;
@@ -182,6 +187,7 @@ void Player::renderInventoryUI(sf::RenderTarget* window) {
 }
 
 void Player::initAnimations() {
+    //Initialize all the animation frames
     this->addAnimation("idle0", 0, 1, 6, 16, 32);
     this->addAnimation("idle1", 6, 1, 6, 16, 32);
     this->addAnimation("idle2", 12, 1, 6, 16, 32);

@@ -86,14 +86,12 @@ public:
     Grid(sf::RenderWindow* window, int size);
     ~Grid();
     
-    void initializeTables();
     void initializeKitchen();
     void initializeSink();
     void initFont();
 
     void addCharacter(Character* character);
     void addTable(Table* table);
-    void setWalkable(int gridX, int gridY, bool walkable);
     
     // Coordinate conversions
     sf::Vector2f gridToPixel(int gx, int gy);

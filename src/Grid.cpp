@@ -12,12 +12,14 @@ Grid::Grid(sf::RenderWindow* window, int size) {
     this->kitchen          = nullptr;
     this->sink             = nullptr;
     this->playerWasMoving  = false;
+
     // Initialize game stats
     this->totalMoney = 0;
     this->totalTips  = 0;
 
     this->nodes.resize(this->width);
 
+    //Initialize nodes
     for (int x = 0; x < this->width; x++) {
         this->nodes[x].resize(this->height);
         for (int y = 0; y < this->height; y++) {
@@ -30,11 +32,13 @@ Grid::Grid(sf::RenderWindow* window, int size) {
         }
     }
 
+    //Initialize the player and customer queue
     this->player         = nullptr;
     this->selectedEntity = EntityType::NONE;
     this->customerQueue =
-        new CustomerQueue(this->size, sf::Vector2f(2.f, 2.f), 5.f);
-
+    new CustomerQueue(this->size, sf::Vector2f(2.f, 2.f), 5.f);
+    
+    //Initialize sprites and fonts
     this->floorTexture.loadFromFile("assets/floor.png");
     this->floorSprite.setTexture(this->floorTexture);
     this->floorSprite.setTextureRect(sf::IntRect(16, 0, 16, 16));
@@ -50,6 +54,9 @@ Grid::Grid(sf::RenderWindow* window, int size) {
 
 
 Grid::~Grid() {
+
+    //Free all the pointers
+
     for (Character* character : this->characters) {
         delete character;
     }
@@ -76,9 +83,6 @@ Grid::~Grid() {
     if (this->sink) delete this->sink;
 }
 
-void Grid::initializeTables() {
-    this->tables.push_back(new Table(sf::Vector2f(5, 3), this->size, true));
-}
 
 void Grid::initializeKitchen() {
     // Place kitchen at top of screen
@@ -104,35 +108,35 @@ void Grid::initializeSink() {
     }
 }
 
+//Adds given character to the grid
 void Grid::addCharacter(Character* character) {
     this->characters.push_back(character);
 }
 
+//Adds given table to the grid
 void Grid::addTable(Table* table) {
     this->tables.push_back(table);
-
+    
+    // Mark table tiles as non-walkable
     for (sf::Vector2f tile : table->getOccupiedTiles()) {
         this->nodes[(int)tile.x][(int)tile.y].tileType = TileType::TABLE;
     }
 }
 
-void Grid::setWalkable(int gridX, int gridY, bool walkable) {
-    if (gridX >= 0 && gridX < width && gridY >= 0 && gridY < height) {
-        this->nodes[gridX][gridY].tileType =
-            (walkable ? TileType::EMPTY : TileType::SOLID);
-    }
-}
 
+//Converts grid coordinates to onscreen coordinates
 sf::Vector2f Grid::gridToPixel(int gx, int gy) {
     return sf::Vector2f(gx * this->size + this->size / 2.0f,
                         gy * this->size + this->size / 2.0f);
 }
 
+//Converts screen coordinates to grid coordinates
 sf::Vector2i Grid::pixelToGrid(float px, float py) {
     return sf::Vector2i(static_cast<int>(px / this->size),
                         static_cast<int>(py / this->size));
 }
 
+// Get the neighbours of a node
 std::vector<Node*> Grid::getNeighbours(Node* node) {
     std::vector<Node*> neighbours;
 
@@ -145,38 +149,47 @@ std::vector<Node*> Grid::getNeighbours(Node* node) {
     return neighbours;
 }
 
+//Calculate the distance between two nodes
 int Grid::manhattanDistance(Node* a, Node* b) {
     return abs(a->x - b->x) + abs(a->y - b->y);
 }
 
+//A* implementation
+// Finds a path from start to goal using the A* pathfinding algorithm
 std::vector<sf::Vector2f> Grid::findPath(sf::Vector2f start,
                                          sf::Vector2f goal) {
+    // Convert pixel coordinates to grid coordinates
     sf::Vector2i startGrid = pixelToGrid(start.x, start.y);
     sf::Vector2i goalGrid  = sf::Vector2i((int)goal.x, (int)goal.y);
 
+    // Validate that both start and goal are within grid bounds
     if (startGrid.x < 0 || startGrid.x >= width || startGrid.y < 0 ||
         startGrid.y >= height || goalGrid.x < 0 || goalGrid.x >= width ||
         goalGrid.y < 0 || goalGrid.y >= height) {
         return {};
     }
 
+    // Get references to the start and goal nodes
     Node* startNode = &nodes[startGrid.x][startGrid.y];
     Node* goalNode  = &nodes[goalGrid.x][goalGrid.y];
 
-    // Reset all nodes
+    // Initialize all nodes: reset costs and parent pointers for a fresh search
     for (int x = 0; x < width; x++) {
         for (int y = 0; y < height; y++) {
-            nodes[x][y].gCost  = INT_MAX;
-            nodes[x][y].hCost  = 0;
-            nodes[x][y].parent = nullptr;
+            nodes[x][y].gCost  = INT_MAX;  // Cost from start node
+            nodes[x][y].hCost  = 0;        // cost to goal
+            nodes[x][y].parent = nullptr;  // For path reconstruction
         }
     }
 
     std::vector<Node*> pendingNodes, visitedNodes;
+    
+    // Initialize start node and add it to pending list
     pendingNodes.push_back(startNode);
-    startNode->gCost = 0;
+    startNode->gCost = 0;  
     startNode->hCost = manhattanDistance(startNode, goalNode);
 
+    // Main A* loop
     while (!pendingNodes.empty()) {
         Node* current = pendingNodes[0];
         for (Node* n : pendingNodes) {
@@ -208,11 +221,12 @@ std::vector<sf::Vector2f> Grid::findPath(sf::Vector2f start,
                 continue;
 
             int newCost = current->gCost + 1;
+            
             if (newCost < neighbour->gCost) {
                 neighbour->gCost  = newCost;
                 neighbour->hCost  = manhattanDistance(neighbour, goalNode);
                 neighbour->parent = current;
-
+                
                 if (std::find(pendingNodes.begin(), pendingNodes.end(),
                               neighbour) == pendingNodes.end()) {
                     pendingNodes.push_back(neighbour);
@@ -221,6 +235,7 @@ std::vector<sf::Vector2f> Grid::findPath(sf::Vector2f start,
         }
     }
 
+    // No path found between start and goal
     return {};
 }
 
@@ -239,7 +254,7 @@ void Grid::movePlayerTo(sf::Vector2f gridTarget, PlayerAction action) {
             { 1,  0},
             {-1,  0}
         };
-        for (auto& offset : offsets) {
+        for (sf::Vector2i offset : offsets) {
             int nx = targetTile.x + offset.x;
             int ny = targetTile.y + offset.y;
             if (nx >= 0 && nx < width && ny >= 0 && ny < height &&
@@ -258,12 +273,14 @@ void Grid::movePlayerTo(sf::Vector2f gridTarget, PlayerAction action) {
     }
 }
 
+//Move the player to the table
 void Grid::movePlayerToTable(Table* table) {
     sf::Vector2f interactionPoint = table->getInteractionPoint();
     player->setTargetTable(table);
     movePlayerTo(interactionPoint, PlayerAction::INTERACT_TABLE);
 }
 
+//Move the player to the kitchen
 void Grid::movePlayerToKitchen() {
     if (!kitchen) return;
     sf::Vector2f interactionPoint = kitchen->getInteractionPoint();
@@ -271,6 +288,7 @@ void Grid::movePlayerToKitchen() {
     movePlayerTo(interactionPoint, PlayerAction::INTERACT_KITCHEN);
 }
 
+//Move the player to the sink
 void Grid::movePlayerToSink() {
     if (!sink) return;
     sf::Vector2f interactionPoint = sink->getInteractionPoint();
@@ -278,6 +296,7 @@ void Grid::movePlayerToSink() {
     movePlayerTo(interactionPoint, PlayerAction::INTERACT_SINK);
 }
 
+//Player interacts with the table
 void Grid::handleTableInteraction(Table* table) {
     Inventory& inv      = player->getInventory();
     Customer*  customer = table->getSeatedCustomer();
@@ -315,6 +334,7 @@ void Grid::handleTableInteraction(Table* table) {
     if (table->hasDirtyDishes() && !inv.isFull()) {
         Item dishItem(ItemType::DIRTY_DISHES, table, nullptr);
         if (inv.addItem(dishItem)) {
+
             // Find and remove the left customer associated with this table
             for (auto it = leftCustomers.begin(); it != leftCustomers.end();
                  ++it) {
@@ -354,7 +374,7 @@ void Grid::handleKitchenInteraction() {
             Item foodItem(ItemType::FOOD, readyOrder->getTable(),
                           readyOrder->getCustomer(), readyOrder->getId());
             inv.addItem(foodItem);
-            delete readyOrder;  // Kitchen transfers ownership
+            delete readyOrder;  // Order is complete
         }
         return;
     }
@@ -469,6 +489,8 @@ void Grid::handleMouseReleased(sf::Vector2f mousePos) {
         this->selectedEntity = EntityType::PLAYER;
 
         Table* tableToSeat = nullptr;
+
+        //Check if the the mouse is released over a table
         for (Table* table : this->tables) {
             if (table->getBounds().contains(mousePos)) {
                 tableToSeat = table;
@@ -476,6 +498,7 @@ void Grid::handleMouseReleased(sf::Vector2f mousePos) {
             }
         }
 
+        //Check if its a valid table (Right size, and not occupied)
         if (tableToSeat) {
             if (tableToSeat->getSize() ==
                     this->draggedCustomer->getGroupSize() &&
@@ -490,12 +513,14 @@ void Grid::handleMouseReleased(sf::Vector2f mousePos) {
             }
         }
 
+        //If the customer was not seated, return to original position
         this->draggedCustomer->returnToStartPosition();
         this->draggedCustomer->stopDrag();
         this->draggedCustomer = nullptr;
     }
 }
 
+//Handle mouse inputs
 void Grid::updateInputs(sf::Vector2i mousePos) {
     bool currentMouseState = sf::Mouse::isButtonPressed(sf::Mouse::Left);
     sf::Vector2f mousePosf = sf::Vector2f((float)mousePos.x, (float)mousePos.y);
@@ -510,6 +535,7 @@ void Grid::updateInputs(sf::Vector2i mousePos) {
     mousePressed = currentMouseState;
 }
 
+
 void Grid::update(const float& dt) {
     bool playerIsMoving = player->isMoving();
 
@@ -517,7 +543,8 @@ void Grid::update(const float& dt) {
 
     // Check if player just stopped moving
     if (playerWasMoving && !player->isMoving()) {
-        // Player just arrived
+
+        //Interact with the destination
         if (selectedEntity == EntityType::TABLE && selectedTable) {
             handleTableInteraction(selectedTable);
             selectedTable = nullptr;
@@ -531,6 +558,8 @@ void Grid::update(const float& dt) {
 
     playerWasMoving = playerIsMoving;
 
+    //Update all the children objects
+
     for (Character* character : this->characters) {
         character->update(dt);
     }
@@ -539,7 +568,6 @@ void Grid::update(const float& dt) {
         customer->update(dt);
     }
 
-    // Update left customers (for dirty dish tracking)
     for (Customer* customer : this->leftCustomers) {
         customer->update(dt);
     }
@@ -564,29 +592,22 @@ void Grid::update(const float& dt) {
 }
 
 void Grid::render(sf::RenderTarget* window) {
-    // Render grid tiles
-
+    
+    // Render floor
     for (int x = 0; x < this->width; x++) {
         for (int y = 0; y < this->height; y++) {
-            sf::RectangleShape cell(
-                sf::Vector2f((float)(this->size), (float)(this->size)));
-                cell.setPosition((float)(x * this->size), (float)(y * this->size));
+
                 this->floorSprite.setPosition(
                     sf::Vector2f((float)(x * this->size), (float)(y * this->size)));
-                    if (nodes[x][y].tileType != TileType::EMPTY) {
-                        cell.setFillColor(sf::Color(96, 59, 42));
-                    } else {
-                        cell.setFillColor(sf::Color(193, 154, 107));
-                    }
-                    
-                    cell.setFillColor(sf::Color(193, 154, 107));
-                    window->draw(cell);
                     window->draw(this->floorSprite);
                 }
             }
-            window->draw(this->carpetSprite);
+
+    // Render the carpet
+    window->draw(this->carpetSprite);
 
     
+    //Render all children objects
     for (Table* table : this->tables) {
         table->render(window);
     }
@@ -610,11 +631,11 @@ void Grid::render(sf::RenderTarget* window) {
 }
 
 void Grid::lateRender(sf::RenderTarget* window) {
+    //Call late render on all children objects
     for (Table* table : this->tables) {
         table->lateRender(window);
     }
 
-    // Render customer indicators
     for (Customer* customer : this->seatedCustomers) {
         customer->lateRender(window);
     }
@@ -624,6 +645,7 @@ void Grid::lateRender(sf::RenderTarget* window) {
 
     player->render(window);
 
+    //UI will be rendered on top of everything
     this->renderUI(window);
 }
 
@@ -634,6 +656,7 @@ void Grid::renderUI(sf::RenderTarget* window) {
     text.setFillColor(sf::Color::White);
     window->draw(text);
 }
+
 void Grid::initFont() {
     if (!this->font.loadFromFile("assets/fonts/Emulator.ttf"))
         throw std::runtime_error("MainMenuState: Could not load font");

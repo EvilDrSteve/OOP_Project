@@ -3,6 +3,8 @@
 #include <cstdlib>
 
 Customer::Customer(int size, int gridSize) {
+
+    //Initialize customer attributes
     this->groupSize = size;
     this->position = sf::Vector2f(4.f, 4.f);
     this->gridSize = gridSize;
@@ -18,7 +20,7 @@ Customer::Customer(int size, int gridSize) {
     this->eatingTime = 5.f + (rand() % 50) / 10.f;     // 5-10 seconds
     this->postEatingTime = 2.f + (rand() % 20) / 10.f; // 2-4 seconds
     
-    // Visual
+    // Load sprites
     this->showIndicator = false;
     this->currentIndicator = CustomerIndicator::NONE;
     
@@ -29,6 +31,7 @@ Customer::Customer(int size, int gridSize) {
     this->plateSprite.setTexture(plateTexture);
 
     this->plateSprite.setScale(this->gridSize / 24.f, this->gridSize / 24.f);
+    
     // Dishes
     this->hasDirtyDishes = false;
     
@@ -53,6 +56,7 @@ void Customer::setupCharacters() {
         "assets/Modern tiles_Free/Characters_free/Bob_16x16.png"
     };
 
+    //Initialize random characters
     for (int i = 0; i < this->groupSize; i++) {
         int randomIndex = rand() % characterFiles.size();
         CustomerCharacter* character = 
@@ -75,6 +79,8 @@ void Customer::setupCharacters() {
     this->updateCharacterPositions();
 }
 
+
+//Fix each character's position based on group size
 void Customer::updateCharacterPositions() {
     sf::Vector2f offset(0.75, 0.75);
     
@@ -119,6 +125,7 @@ void Customer::setState(CustomerState newState) {
     updateIndicator();
 }
 
+//Update Indicators
 void Customer::updateIndicator() {
     switch (state) {
         case CustomerState::READY_TO_ORDER:
@@ -218,9 +225,11 @@ void Customer::lateRender(sf::RenderTarget* window) {
 
     this->renderIndicator(window);
 
-        // Draw indicator above the table
+    // Draw indicator above the table
     sf::Vector2f tablePos(position.x * gridSize, position.y * gridSize);
     bool renderPlates = false;
+
+    //Check if plates should be empty or full
     if (this->currentIndicator == CustomerIndicator::EATING) {
         this->plateSprite.setTextureRect(sf::IntRect(32, 0, 32, 32));
         renderPlates = true;
@@ -229,12 +238,14 @@ void Customer::lateRender(sf::RenderTarget* window) {
         renderPlates = true;
     }
 
+    //Render plates
     if (renderPlates) {
         this->plateSprite.setPosition(tablePos.x + (10 / 24.f * this->gridSize), tablePos.y - (45 / 24.f * this->gridSize));
         window->draw(this->plateSprite);
         this->plateSprite.setPosition(tablePos.x + (52 / 24.f * this->gridSize), tablePos.y - (45 / 24.f * this->gridSize));
         window->draw(this->plateSprite);
         
+        // Draw 2 more plates for a big table
         if (this->getTable()->getSize() == 4) {
             this->plateSprite.setPosition(tablePos.x + (10 / 24.f * this->gridSize), tablePos.y - (15 / 24.f * this->gridSize));
             window->draw(this->plateSprite);
@@ -295,6 +306,7 @@ bool Customer::containsPoint(sf::Vector2f point) const {
     return false;
 }
 
+// Start dragging the customer and lower the opacity
 void Customer::startDrag(sf::Vector2f mouseWorldPos) {
     isDragging = true;
     dragStartPosition = this->position;
@@ -309,6 +321,7 @@ void Customer::startDrag(sf::Vector2f mouseWorldPos) {
     }
 }
 
+// Keep dragging the customer
 void Customer::drag(sf::Vector2f mouseWorldPos) {
     if (!isDragging) return;
     
@@ -317,6 +330,7 @@ void Customer::drag(sf::Vector2f mouseWorldPos) {
                                    newWorldPos.y / this->gridSize));
 }
 
+// Stop dragging the customer and fix opacity
 void Customer::stopDrag() {
     isDragging = false;
     
@@ -326,6 +340,7 @@ void Customer::stopDrag() {
     }
 }
 
+// Reset posiiton when unsuccesful drag
 void Customer::returnToStartPosition() {
     this->setPosition(this->dragStartPosition);
 }
@@ -337,6 +352,8 @@ bool Customer::getIsDragging() const {
 int Customer::getGroupSize() const {
     return this->groupSize;
 }
+
+// Self explanatory action methods
 
 void Customer::sitAtTable(Table* table) {
     this->occupiesTable = table;

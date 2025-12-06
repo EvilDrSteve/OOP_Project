@@ -11,6 +11,7 @@ Order::Order(Table* table, Customer* customer, float cookTime) {
     this->cookProgress = 0.f;
 }
 
+// Update order progress
 void Order::update(const float& dt) {
     if (status == OrderStatus::COOKING) {
         cookProgress += dt;

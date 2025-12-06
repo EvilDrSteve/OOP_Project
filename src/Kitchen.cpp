@@ -5,9 +5,9 @@
 #include "Table.hpp"
 
 Kitchen::Kitchen(sf::Vector2f gridPos, int gridSize) {
-    this->gridSize        = gridSize;
-    this->position        = gridPos;
-    this->size = sf::Vector2f(13.f, 4.f);  
+    this->gridSize = gridSize;
+    this->position = gridPos;
+    this->size     = sf::Vector2f(13.f, 4.f);
     // Setup visual shape
     this->shape =
         sf::RectangleShape(sf::Vector2f(size.x * gridSize, size.y * gridSize));
@@ -17,24 +17,18 @@ Kitchen::Kitchen(sf::Vector2f gridPos, int gridSize) {
     this->shape.setOutlineColor(sf::Color(80, 50, 30));
     this->shape.setOutlineThickness(2.f);
 
-      if (!this->counterTexture.loadFromFile("assets/kitchen.png")) {
-    std::cout << "failed to load kitchen.png\n";
+    if (!this->counterTexture.loadFromFile("assets/kitchen.png")) {
+        std::cout << "failed to load kitchen.png\n";
     }
     this->counterSprite.setTexture(this->counterTexture);
 
-    // Position at RIGHT side, centered vertically
-    float windowWidth  = 1024.f;
-    // float windowHeight = 576.f;
-    
-    // Move it slightly inward (-60) so it doesn’t go off-screen
-    this->counterSprite.setPosition(windowWidth/4, 0);
-    
-    // Optional scale
-    this->counterSprite.setScale(1.0f, 1.0f);
+    float windowWidth = 1024.f;
 
-    }
+    this->counterSprite.setPosition(windowWidth / 4, 0);
+}
 
 Kitchen::~Kitchen() {
+    // Delete all the pointers
     for (Order* order : pendingOrders) {
         delete order;
     }
@@ -51,7 +45,7 @@ void Kitchen::addOrder(Order* order) {
     pendingOrders.push_back(order);
 }
 
-
+// Pick ready orders from the kitchen
 Order* Kitchen::pickupAnyOrder() {
     if (!readyOrders.empty()) {
         Order* order = readyOrders.front();
@@ -63,7 +57,7 @@ Order* Kitchen::pickupAnyOrder() {
 
 bool Kitchen::hasReadyOrders() const { return !readyOrders.empty(); }
 
-
+// Update the kitchen (cook orders)
 void Kitchen::update(const float& dt) {
     if (!pendingOrders.empty()) {
         Order* order = pendingOrders[0];
@@ -78,16 +72,19 @@ void Kitchen::update(const float& dt) {
 }
 
 void Kitchen::render(sf::RenderTarget* window) {
+    // Draw kitchen sprite
     window->draw(this->counterSprite);
 
     // Draw ready order indicators
     float indicatorX = (position.x + 4) * gridSize + 5;
     float indicatorY = (position.y + 4) * gridSize - 20;
 
+    // Display ready orders
     for (size_t i = 0; i < readyOrders.size() && i < 5; i++) {
         sf::CircleShape indicator(8.f);
         indicator.setFillColor(sf::Color::Green);
-        indicator.setPosition(indicatorX + ((i + 1) * this->gridSize), indicatorY);
+        indicator.setPosition(indicatorX + ((i + 1) * this->gridSize),
+                              indicatorY);
         window->draw(indicator);
     }
 

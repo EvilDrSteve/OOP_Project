@@ -1,5 +1,4 @@
 #include "GameState.hpp"
-#include "EndState.hpp"
 #include "Chef.hpp"
 #include <iostream>
 GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states)
@@ -7,23 +6,31 @@ GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states)
     std::cout << "Game State Created" << std::endl;
 
     this->gameStarted = false;
+
+    //Initialize the grid
     this->gridSize = 32;
     this->grid   = new Grid(window, this->gridSize);
-    // After creating the grid
     grid->initializeKitchen();
     grid->initializeSink();
+
+    //Setup the level
     this->setupLevel();
+
+    //Play music
     if (!musicPlayer.openFromFile("assets/bgMusic.mp3")) {
         std::cout << "Failed to load music\n";
     }
 
     musicPlayer.play();
     musicPlayer.setLoop(true);
+
+    //Initialize the Chef
     Chef* chefAlex = new Chef(11, 3, this->gridSize, "Alex");
     this->grid->addCharacter(chefAlex);
 }
 
 GameState::~GameState() {
+    //Free pointers
     this->endState();
     delete this->grid;
     delete this->player;
@@ -31,7 +38,7 @@ GameState::~GameState() {
 }
 
 void GameState::setupLevel(){
-
+    //Setup the tables in the level
     int startX = 10;
     int startY = 5;
     this->player = new Player(startX + 10, startY + 10, this->gridSize, "Adam");
@@ -45,24 +52,29 @@ void GameState::setupLevel(){
 }
 
 void GameState::update(const float& dt) {
+    //Update everything
     this->checkForQuit();
     this->updateMousePos();
     this->updateInputs(dt);
     this->grid->update(dt);
     
+    
+    //End the game after 5 minutes
     this->gameTimer += dt;
-
     if(gameTimer > 300){
         this->active = false;
-        // states->push(new EndState(this->window, states, 0, 0, 0));
     }
 }
 
+
+//Render the grid
 void GameState::render() { this->grid->render(this->window); }
 void GameState::lateRender() { this->grid->lateRender(this->window); }
 
-void GameState::endState() { std::cout << "Game State Ended" << std::endl; }
 
+void GameState::endState() { }
+
+// Update mouse position
 void GameState::updateInputs(const float& dt) {
 
     sf::Vector2i mousePos = sf::Mouse::getPosition(*this->window);

@@ -6,6 +6,7 @@
 MainMenuState::MainMenuState(sf::RenderWindow* window, std::stack<State*>* states)
 : State(window, states)
 {
+    // Call the initialize functions
     initBackground();
     initFont();
     initTitle();
@@ -14,12 +15,14 @@ MainMenuState::MainMenuState(sf::RenderWindow* window, std::stack<State*>* state
 }
 
 MainMenuState::~MainMenuState() {
+    // Delete the button pointer
     delete playButton;
 }
 
 
 void MainMenuState::initBackground() {
-    
+    // Load the background
+
     woodTileTex.loadFromFile("assets/floor_tile.png");
     woodTileTex.setRepeated(true);
 
@@ -34,10 +37,12 @@ void MainMenuState::initBackground() {
 
 
 void MainMenuState::initFont() {
+    // Load the fonts
     font.loadFromFile("assets/fonts/Emulator.ttf"); 
 }
 
 void MainMenuState::initTitle() {
+    // Load the title
     title.setFont(font);
     title.setString("Diner Dash");
     title.setCharacterSize(80);
@@ -47,7 +52,6 @@ void MainMenuState::initTitle() {
 
     float windowWidth = window->getSize().x;
     float titleWidth = title.getGlobalBounds().width;
-    float titleHeight = title.getGlobalBounds().height;
 
     float xPos = (windowWidth - titleWidth) / 2.f;
     float yPos = 100.f; 
@@ -56,6 +60,7 @@ void MainMenuState::initTitle() {
 
 
 void MainMenuState::initButton() {
+    // Load the button
     float windowWidth = window->getSize().x;
     float buttonWidth = 300.f; 
     float buttonHeight = 90.f;
@@ -74,6 +79,7 @@ void MainMenuState::initButton() {
 
 
 void MainMenuState::initTables() {
+    // Load the tables used in the main menu
     tableTex1.loadFromFile("assets/mm_table1.png");
     tableTex2.loadFromFile("assets/mm_table2.png");
     tableTex3.loadFromFile("assets/mm_table3.png");
@@ -106,31 +112,38 @@ void MainMenuState::initTables() {
 }
 
 void MainMenuState::update(const float& dt) {
-    updateMousePos();
-    updateInputs(dt);
 
+    //Get new mouse position
+    updateMousePos();
+
+    //Update the button
     playButton->update(sf::Vector2f(mousePosWindow));
 
+    //Start the game if button is pressed
     if (playButton->isPressed()) {
         states->push(new GameState(window, states));
     }
+
+    //Quit
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q)){
         this->active = false;
     }
 
 }
 
-void MainMenuState::updateInputs(const float& dt) {}
 
 void MainMenuState::endState() {
-    std::cout << "Main Menu State Ended" << std::endl;
 }
 
 void MainMenuState::lateRender() {
 }
 
+void MainMenuState::updateInputs(const float& dt){
+
+}
 
 void MainMenuState::render() {
+    //Render everything
     window->draw(background);
     window->draw(title);
     

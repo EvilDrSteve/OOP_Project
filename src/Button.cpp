@@ -1,6 +1,9 @@
 #include "Button.hpp"
 #include <iostream>
 Button::Button(float x, float y, float width, float height, sf::Font* font, std::string buttonText, sf::Color color){
+    
+    //Initialize button attribtues
+    
     this->buttonState = 0;
     this->shape.setPosition(sf::Vector2f(x, y));
     this->shape.setSize(sf::Vector2f(width, height));
@@ -39,12 +42,15 @@ Button::~Button(){
 
 void Button::update(const sf::Vector2f mousePos){
     this->buttonState = 0;
+
+    //Check if button is hovered over or pressed
     if(this->shape.getGlobalBounds().contains(mousePos)){
         this->buttonState = 1;
 
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) this->buttonState = 2;
     }
 
+    //Set button color based on its state
     switch(this->buttonState){
         case 0:
         this->shape.setFillColor(this->idleColor);
@@ -60,11 +66,6 @@ void Button::update(const sf::Vector2f mousePos){
         this->shape.setFillColor(this->idleColor);
     }
 }
-
-// void Button::render(sf::RenderTarget* target){
-//     target->draw(this->shape);
-//     target->draw(this->buttonText);
-// }
 
 void Button::render(sf::RenderTarget* target){
     if (useTexture) {

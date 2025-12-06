@@ -30,8 +30,9 @@ void Sink::dropDishes() {
 }
 
 void Sink::update(const float& dt) {
-    // Could add animations here
-     frameTimer += dt;
+
+    //Animate the sink
+    frameTimer += dt;
     if (frameTimer >= frameTime)
     {
         frameTimer = 0.f;
@@ -59,6 +60,7 @@ bool Sink::containsPoint(sf::Vector2f point) const {
     return getBounds().contains(point);
 }
 
+// Return which tiles the sink occupies
 std::vector<sf::Vector2f> Sink::getOccupiedTiles() const {
     std::vector<sf::Vector2f> tiles;
     for (int y = 0; y < (int)size.y; y++) {

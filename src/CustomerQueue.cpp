@@ -50,6 +50,7 @@ void CustomerQueue::spawnCustomer() {
     this->updateQueuePositions();
 }
 
+// Get the customer the mouse is currently on
 Customer* CustomerQueue::getCustomerAtPos(sf::Vector2f pos) {
     for (Customer* customer : this->waitingCustomers) {
         for (CustomerCharacter* character : customer->getCharacters()) {
@@ -62,6 +63,8 @@ Customer* CustomerQueue::getCustomerAtPos(sf::Vector2f pos) {
 
     return nullptr;
 }
+
+// Update the customers in queue when a customer is removed from the queue
 void CustomerQueue::updateQueuePositions() {
     int position = 0;
     for (Customer* customer : this->waitingCustomers) {
@@ -69,12 +72,16 @@ void CustomerQueue::updateQueuePositions() {
         targetPos.y += position * this->spacing;
 
         position++;
+
+        //Dont change the position of the customer if its being dragged
         if (customer->getIsDragging()) continue;
+
         customer->setPosition(targetPos);
         customer->updateCharacterPositions();
     }
 }
 
+//Remove customer from the queue
 void CustomerQueue::removeCustomer(Customer* customer) {
     auto it =
         std::find(waitingCustomers.begin(), waitingCustomers.end(), customer);

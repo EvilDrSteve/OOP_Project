@@ -1,11 +1,12 @@
 #include "Chef.hpp"
-#include "Animation.hpp"
 #include <cmath>
 #include "Grid.hpp"
 
 Chef::Chef(int x, int y, int gridSize, std::string name)
     : Character("assets/Modern tiles_Free/Characters_free/chef.png")
 {
+    //Initialize chef attributes
+
     this->movementSpeed = 100.f; 
     this->currentStep = 0;
     
@@ -34,6 +35,7 @@ void Chef::render(sf::RenderTarget* window) {
 }
 
 void Chef::initAnimations() {
+    //Load animations
     this->addAnimation("idle0", 18, 1, 6, 16, 32);
     this->addAnimation("idle1", 6, 1, 6, 16, 32);
     this->addAnimation("idle2", 12, 1, 6, 16, 32);
@@ -45,7 +47,7 @@ void Chef::initAnimations() {
 }
 
 void Chef::move(const float& dt, const float x, const float y) {
-
+// Chef does not move
 }
 
 void Chef::setSpritePosition(const sf::Vector2f& pos) {

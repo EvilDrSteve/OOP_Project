@@ -9,6 +9,7 @@ Table::Table(sf::Vector2f pos, int gridSize, bool big) {
     this->state = TableState::EMPTY;
     this->seatedCustomer = nullptr;
     
+    //Initialize based no table size
     if (big)
         this->size = sf::Vector2f(4.f * gridSize, 4.f * gridSize);
     else
@@ -41,6 +42,8 @@ Table::Table(sf::Vector2f pos, int gridSize, bool big) {
     dirtyIndicator.setOutlineThickness(1.f);
 }
 
+
+// Return which tiles the table occupies on the grid
 std::vector<sf::Vector2f> Table::getOccupiedTiles() const {
     std::vector<sf::Vector2f> tiles;
     
@@ -93,6 +96,7 @@ void Table::update(const float& dt) {
 }
 
 void Table::render(sf::RenderTarget* window) {
+    //Draw the chair
     this->tableSprite.setTexture(chairTexture);
     window->draw(this->tableSprite);
     
@@ -103,6 +107,7 @@ void Table::render(sf::RenderTarget* window) {
 }
 
 void Table::lateRender(sf::RenderTarget* window) {
+    //Draw the table
     this->tableSprite.setTexture(tableTexture);
     window->draw(this->tableSprite);
 }
@@ -115,6 +120,8 @@ int Table::getSize() const {
     return this->bigTable ? 4 : 2;
 }
 
+
+// Seat customers at the table
 void Table::seatCustomer() {
     this->occupied = true;
     this->state = TableState::OCCUPIED;
@@ -130,6 +137,7 @@ bool Table::getOccopied() const {
     return this->occupied;
 }
 
+// set table state
 void Table::setState(TableState newState) {
     this->state = newState;
     
@@ -141,6 +149,7 @@ void Table::setState(TableState newState) {
         this->seatedCustomer = nullptr;
     }
 }
+
 
 void Table::clearTable() {
     this->state = TableState::EMPTY;
