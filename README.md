@@ -18,3 +18,4 @@ make
 ```
 https://github.com/EvilDrSteve/OOP_Project
 ```
+Check [ARCHITECTURE.md](ARCHITECTURE.md) for details.
