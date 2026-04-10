@@ -1,6 +1,13 @@
 # === Compiler and flags ===
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -I include
+INCLUDE_DIRS = -Iinclude \
+               -Iinclude/core \
+               -Iinclude/states \
+               -Iinclude/entities \
+               -Iinclude/world \
+               -Iinclude/systems \
+               -Iinclude/ui
+CXXFLAGS = -std=c++17 -Wall $(INCLUDE_DIRS)
 LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 
 # === Directories ===
@@ -10,8 +17,8 @@ OBJ_DIR = obj
 BUILD_DIR = build
 BIN = $(BUILD_DIR)/game
 
-# === Source and object files ===
-SRC = $(wildcard $(SRC_DIR)/*.cpp)
+# === Source and object files (recursive) ===
+SRC = $(shell find $(SRC_DIR) -name '*.cpp')
 OBJ = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
 MAIN_OBJ = $(OBJ_DIR)/main.o
 
@@ -22,8 +29,9 @@ all: $(BIN)
 $(BIN): $(OBJ) $(MAIN_OBJ) | $(BUILD_DIR)
 	$(CXX) $(OBJ) $(MAIN_OBJ) -o $@ $(LDFLAGS)
 
-# === Compile .cpp files from src/ into obj/ ===
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
+# === Compile .cpp files from src/ (nested dirs) into matching obj/ tree ===
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # === Compile main.cpp (in root folder) ===
